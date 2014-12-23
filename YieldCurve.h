@@ -5,40 +5,89 @@
 #include <string>
 using namespace std;
 
+#define NUM_OF_LIBORGRD 7
+#define NUM_OF_INTPLTDSWPGRD 59
+#define NUM_OF_DEFAULT_ZRRTGRD 65
+
 class YieldCurve{
 
 private:
-	string cur;							//currency
-	double libor[7];					//libor
-	double swapRate[15];				//swapRate
-	double swapGlid[15];				//glid of swap
-	double interpolatedSwapRate[59];	//interpolatedSwapRate(6 Month)
-	double discountFactor[65];			//discount factor
-	double zeroRate[65];				//zeroRate
+	
+	string currency;
+	double defaultGridLibor[NUM_OF_LIBORGRD];
+	double defaultLiborGrid[NUM_OF_LIBORGRD];
+	double *libor;
+	int numOfLiborGrid;
+	double *liborGrid;
+	double *swapRate;
+	int numOfSwapGrid;
+	double *swapGrid;
+	double interpolatedSwapRate[NUM_OF_INTPLTDSWPGRD];
+	double interpolatedSwapGrid[NUM_OF_INTPLTDSWPGRD];
+	double defaultDiscountFactor[NUM_OF_DEFAULT_ZRRTGRD];
+	double defaultZeroRate[NUM_OF_DEFAULT_ZRRTGRD];
+	double defaultZeroRateGrid[NUM_OF_DEFAULT_ZRRTGRD];
+	double *designatedDiscountFactor;
+	double *designatedZeroRate;
+	int NumOfDesignatedGrid;
+	double *designatedGrid;
+	int numOfZeroRateGrid;
+	int buildZeroRateFlag;
+	
 	
 	//interpolateMethod
-	double interpolate(double preGlid, double postGlid, double preValue, double postValue, double targetGlid);
+	double interpolate(
+		double preGrid, 
+		double postGrid, 
+		double preValue, 
+		double postValue, 
+		double targetGrid);
+	
+	//interpolateRangeMethod
+	double interpolateRange(
+		double targetGrid, 
+		double *gridArray, 
+		double *valueArray, 
+		int numOfArray);
+	
+	//bootstrapMethod
+	void bootstrap();
+	
+	void liborInterpolation();
+	
 	
 public:
 	
 	//Constructor
-	YieldCurve(string currency, const double *liborArr, const double *swapArr);
+	YieldCurve();
+	YieldCurve(
+		string currency, 
+		const double *liborValue, 
+		int liborGridNum, 
+		const double *liborgrid, 
+		const double *swapValue, 
+		int swapGridNum, 
+		const double *swapgrid
+	);
 	
 	//setter
-	void setcur(string currency);
-	void setlibor(const double *liborArr);
-	void setswapRate(const double *swapArr);
+	void setcur(string cur);
+	void setlibor(const double *liborValue, const double *liborgrid, int liborGridNum);
+	void setswapRate(const double *swapValue, int swapGridNum, const double *swapgrid);
 	
 	//getter
 	string getcur();
-	double* getlibor();
-	double* getswapRate();
-	double* getinterpolatedSwapRate();
-	double* getdiscountFactor();
-	double* getZeroRate();
+	void getLibor(double *liborVal);
+	void getSwapRate(double *swapRateVal);
 	
-	//bootstrapMethod
-	void bootstrap();
+	void getDiscountFactor(double *DF);
+	void getDiscountFactor(double *DF, int gridNum, const double *grid);
+	void getZeroRate(double *rtnZeroRate);
+	void getZeroRate(double *rtnZeroRate, int gridNum, const double *grid);
+	
+	void getinterpolatedSwapRate(double *interpolatedSwapRateVal);
+	
+	void buildYieldCurve();
 	
 };
 
