@@ -70,31 +70,24 @@ YieldCurve::YieldCurve(string cur, const double *liborValue, int liborGridNum, c
 YieldCurve::~YieldCurve(){
 	if(libor != NULL){
 		delete[] libor;
-		cout << "libor is freed." << endl;
 	}
 	if(liborGrid != NULL){
 		delete[] liborGrid;
-		cout << "liborGrid is freed." << endl;
 	}
 	if(swapRate != NULL){
 		delete[] swapRate;
-		cout << "swapRate is freed." << endl;
 	}
 	if(swapGrid != NULL){
 		delete[] swapGrid;
-		cout << "swapGrid is freed." << endl;
 	}
 	if(designatedDiscountFactor != NULL){
 		delete[] designatedDiscountFactor;
-		cout << "desigFD is freed." << endl;
 	}
 	if(designatedZeroRate != NULL){
 		delete[] designatedZeroRate;
-		cout << "desigZR is freed." << endl;
 	}
 	if(designatedGrid != NULL){
 		delete[] designatedGrid;
-		cout << "desigGrid is freed." << endl;
 	}
 }
 
