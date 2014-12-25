@@ -34,7 +34,6 @@ private:
 	int numOfZeroRateGrid;
 	int buildZeroRateFlag;
 	
-	
 	//interpolateMethod
 	double interpolate(
 		double preGrid, 
@@ -70,6 +69,9 @@ public:
 		const double *swapgrid
 	);
 	
+	//Destructor
+	~YieldCurve();
+
 	//setter
 	void setcur(string cur);
 	void setlibor(const double *liborValue, const double *liborgrid, int liborGridNum);

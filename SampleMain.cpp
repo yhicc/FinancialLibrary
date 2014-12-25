@@ -53,6 +53,11 @@ int main(void){
 	cout << "-----DesDF-----" << endl;
 	printout(desDF, gridNum);
 	
+	delete zeroRate;
+	delete DF;
+	delete desZeroRate;
+	delete desDF;
+
 	return 0;
 
 }

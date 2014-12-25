@@ -11,31 +11,19 @@ using namespace std;
 #define NUM_OF_DEFAULT_ZRRTGRD 65
 
 
-//InterpolateMethod
-double YieldCurve::interpolate(double preGrid, double postGrid, double preValue, double postValue, double targetGrid){
-	double targetValue = 0;
-	targetValue = preValue + (postValue - preValue) / (postGrid - preGrid) * (targetGrid - preGrid);
-	return targetValue;
-}
-
-//InterpolateRangeMethod
-double YieldCurve::interpolateRange(double targetGrid, double *gridArray, double *valueArray, int numOfArray){
-	int i;
-	//targetGridの値が範囲外の場合は最大最小値の値を返す
-	if(targetGrid <= gridArray[0]){
-		return valueArray[0];
-	}else if(targetGrid >= gridArray[numOfArray-1]){
-		return valueArray[numOfArray-1];
-	}
-	
-	for(i = 1; i < numOfArray; i++){
-		if(gridArray[i] >= targetGrid) break;
-	}
-	return interpolate(gridArray[i-1], gridArray[i], valueArray[i-1], valueArray[i], targetGrid);
-}
-
 //constructor
 YieldCurve::YieldCurve(){
+	libor = NULL;
+	liborGrid = NULL;
+	swapRate = NULL;
+	swapGrid = NULL;
+	designatedDiscountFactor = NULL;
+	designatedZeroRate = NULL;
+ 	designatedGrid = NULL;
+	double tmpArray[] = {DEFAULT_LIBOR_GRID};
+	for(int i = 0; i < DEFAULT_LIBOR_GRID_NUM; i++){
+		defaultLiborGrid[i] = tmpArray[i];
+	}
 	buildZeroRateFlag = 0;
 }
 
@@ -65,9 +53,51 @@ YieldCurve::YieldCurve(string cur, const double *liborValue, int liborGridNum, c
 	for(int i = 0; i < numOfSwapGrid; ++i){
 		swapGrid[i] = swapgrid[i];
 	}
-	
+
+	designatedDiscountFactor = NULL;
+	designatedZeroRate = NULL;
+ 	designatedGrid = NULL;
+
+	double tmpArray[] = {DEFAULT_LIBOR_GRID};
+	for(int i = 0; i < DEFAULT_LIBOR_GRID_NUM; i++){
+		defaultLiborGrid[i] = tmpArray[i];
+	}
+
 	buildZeroRateFlag = 0;
 }
+
+//Destructor
+YieldCurve::~YieldCurve(){
+	if(libor != NULL){
+		delete[] libor;
+		cout << "libor is freed." << endl;
+	}
+	if(liborGrid != NULL){
+		delete[] liborGrid;
+		cout << "liborGrid is freed." << endl;
+	}
+	if(swapRate != NULL){
+		delete[] swapRate;
+		cout << "swapRate is freed." << endl;
+	}
+	if(swapGrid != NULL){
+		delete[] swapGrid;
+		cout << "swapGrid is freed." << endl;
+	}
+	if(designatedDiscountFactor != NULL){
+		delete[] designatedDiscountFactor;
+		cout << "desigFD is freed." << endl;
+	}
+	if(designatedZeroRate != NULL){
+		delete[] designatedZeroRate;
+		cout << "desigZR is freed." << endl;
+	}
+	if(designatedGrid != NULL){
+		delete[] designatedGrid;
+		cout << "desigGrid is freed." << endl;
+	}
+}
+
 
 //setter
 void YieldCurve::setcur(string cur){
@@ -76,9 +106,15 @@ void YieldCurve::setcur(string cur){
 
 void YieldCurve::setlibor(const double *liborValue, const double *liborgrid, int liborGridNum){
 	numOfLiborGrid = liborGridNum;
+	if(libor != NULL){
+		delete[] libor;
+	}
 	libor = new double[numOfLiborGrid];
 	for(int i = 0; i < numOfLiborGrid; ++i){
 		libor[i] = liborValue[i];
+	}
+	if(liborGrid != NULL){
+		delete[] liborGrid;
 	}
 	liborGrid = new double[numOfLiborGrid];
 	for(int i = 0; i < numOfLiborGrid; ++i){
@@ -88,9 +124,15 @@ void YieldCurve::setlibor(const double *liborValue, const double *liborgrid, int
 
 void YieldCurve::setswapRate(const double *swapValue, int swapGridNum, const double *swapgrid){
 	numOfSwapGrid = swapGridNum;
+	if(swapRate != NULL){
+		delete[] swapRate;
+	}
 	swapRate = new double[numOfSwapGrid];
 	for(int i = 0; i < numOfSwapGrid; i++){
 		swapRate[i] = swapValue[i];
+	}
+	if(swapGrid != NULL){
+		delete[] swapGrid;
 	}
 	swapGrid = new double[numOfSwapGrid];
 	for(int i = 0; i < numOfSwapGrid; ++i){
@@ -146,6 +188,9 @@ void YieldCurve::getDiscountFactor(double *DF){
 //グリッド指定ありのGetZeroRate
 void YieldCurve::getZeroRate(double *rtnZeroRate, int gridNum, const double *grid){
 	NumOfDesignatedGrid = gridNum;
+	if(designatedGrid != NULL){
+		delete[] designatedGrid;
+	}
 	designatedGrid = new double[NumOfDesignatedGrid];
 	for(int i = 0; i < NumOfDesignatedGrid; i++){
 		designatedGrid[i] = grid[i];
@@ -155,6 +200,9 @@ void YieldCurve::getZeroRate(double *rtnZeroRate, int gridNum, const double *gri
 	}
 	//指定されたGridに補間
 	//ZeroRate
+	if(designatedZeroRate != NULL){
+		delete[] designatedZeroRate;
+	}
 	designatedZeroRate = new double[NumOfDesignatedGrid];
 	for(int i = 0; i < NumOfDesignatedGrid; i++){
 		designatedZeroRate[i] = interpolateRange(designatedGrid[i], defaultZeroRateGrid, defaultZeroRate, NUM_OF_DEFAULT_ZRRTGRD);
@@ -168,6 +216,9 @@ void YieldCurve::getZeroRate(double *rtnZeroRate, int gridNum, const double *gri
 
 void YieldCurve::getDiscountFactor(double *DF, int gridNum, const double *grid){
 	NumOfDesignatedGrid = gridNum;
+	if(designatedGrid != NULL){
+		delete[] designatedGrid;
+	}
 	designatedGrid = new double[NumOfDesignatedGrid];
 	for(int i = 0; i < NumOfDesignatedGrid; i++){
 		designatedGrid[i] = grid[i];
@@ -177,6 +228,9 @@ void YieldCurve::getDiscountFactor(double *DF, int gridNum, const double *grid){
 	}
 	//指定されたGridに補間
 	//DF
+	if(designatedDiscountFactor != NULL){
+		delete[] designatedDiscountFactor;
+	}
 	designatedDiscountFactor = new double[NumOfDesignatedGrid];
 	for(int i = 0; i < NumOfDesignatedGrid; i++){
 		designatedDiscountFactor[i] = interpolateRange(designatedGrid[i], defaultZeroRateGrid, defaultDiscountFactor, NUM_OF_DEFAULT_ZRRTGRD);
@@ -188,6 +242,28 @@ void YieldCurve::getDiscountFactor(double *DF, int gridNum, const double *grid){
 	return;
 }
 
+//InterpolateMethod
+double YieldCurve::interpolate(double preGrid, double postGrid, double preValue, double postValue, double targetGrid){
+	double targetValue = 0;
+	targetValue = preValue + (postValue - preValue) / (postGrid - preGrid) * (targetGrid - preGrid);
+	return targetValue;
+}
+
+//InterpolateRangeMethod
+double YieldCurve::interpolateRange(double targetGrid, double *gridArray, double *valueArray, int numOfArray){
+	int i;
+	//targetGridの値が範囲外の場合は最大最小値の値を返す
+	if(targetGrid <= gridArray[0]){
+		return valueArray[0];
+	}else if(targetGrid >= gridArray[numOfArray-1]){
+		return valueArray[numOfArray-1];
+	}
+	
+	for(i = 1; i < numOfArray; i++){
+		if(gridArray[i] >= targetGrid) break;
+	}
+	return interpolate(gridArray[i-1], gridArray[i], valueArray[i-1], valueArray[i], targetGrid);
+}
 
 void YieldCurve::buildYieldCurve(){
 	liborInterpolation();
@@ -198,10 +274,6 @@ void YieldCurve::buildYieldCurve(){
 
 void YieldCurve::liborInterpolation(){
 	//Liborを補間
-	double tmpArray[] = {DEFAULT_LIBOR_GRID};
-	for(int i = 0; i < DEFAULT_LIBOR_GRID_NUM; i++){
-		defaultLiborGrid[i] = tmpArray[i];
-	}
 	for(int i = 0; i < DEFAULT_LIBOR_GRID_NUM; i++){
 		defaultGridLibor[i] = interpolateRange(defaultLiborGrid[i], liborGrid, libor, DEFAULT_LIBOR_GRID_NUM);
 	}
