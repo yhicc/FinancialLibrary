@@ -113,6 +113,8 @@ void YieldCurve::setlibor(const double *liborValue, const double *liborgrid, int
 	for(int i = 0; i < numOfLiborGrid; ++i){
 		liborGrid[i] = liborgrid[i];
 	}
+	
+	buildZeroRateFlag = 0;
 }
 
 void YieldCurve::setswapRate(const double *swapValue, int swapGridNum, const double *swapgrid){
@@ -131,6 +133,8 @@ void YieldCurve::setswapRate(const double *swapValue, int swapGridNum, const dou
 	for(int i = 0; i < numOfSwapGrid; ++i){
 		swapGrid[i] = swapgrid[i];
 	}
+	
+	buildZeroRateFlag = 0;
 }
 
 
