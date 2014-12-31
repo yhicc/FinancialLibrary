@@ -21,7 +21,7 @@ public:
 	MyDate(string date);
 
 	//destructor
-	~MyDate();
+//	~MyDate();
 
 	//setter
 	void setDate(string date);

@@ -14,14 +14,16 @@ MyDate::MyDate(){
 
 MyDate::MyDate(string date){
 	strDate = date;
+	julianDay = 0;
 }
 
 
 //destructor
+/*
 MyDate::~MyDate(){
 
 }
-
+*/
 
 //setter
 void MyDate::setDate(string date){
@@ -153,27 +155,5 @@ int MyDate::calcDateDiff(MyDate date1, MyDate date2){
 	int julDate2 = stringToJulian(date2.getDate());
 	return (julDate2 - julDate1);
 }
-
-
-
-/*
-int MyDate::getDays(int y, int m, int d){
-	// 1・2月 → 前年の13・14月
-	if (m <= 2){
-		--y;
-		m += 12;
-	}
-	int dy = 365 * (y - 1); // 経過年数×365日
-	int c = y / 100;
-	int dl = (y >> 2) - c + (c >> 2); // うるう年分
-	int dm = (m * 979 - 1033) >> 5; // 1月1日から m 月1日までの日数
-	return dy + dl + dm + d - 1;
-}
-int MyDate::calcDays(string date1, string date2)}
-		
-}
-*/
-
-
 
 
