@@ -3,7 +3,7 @@
 #define YIELDCURVE_H_INCLUDED_
 
 #include <string>
-#include <cmath>
+//#include <cmath>
 using std::string;
 
 #define NUM_OF_LIBORGRD 7
