@@ -2,8 +2,9 @@
 #ifndef MYDATE_H_INCLUDED_
 #define MYDATE_H_INCLUDED_
 
+#include <sstream>
 #include <string>
-using namespace std;
+using std::string;
 
 class MyDate{
 
@@ -36,6 +37,8 @@ public:
 	string julianToString(int julDay);
 	int calcDateDiff(string date1, string date2);
 	int calcDateDiff(MyDate date1, MyDate date2);
+	string addDate(string date, int days);
+	string addDate(MyDate date, int days);
 
 };
 

@@ -1,9 +1,5 @@
 
 #include "YieldCurve.h"
-#include <iostream>
-#include <cmath>
-#include <string>
-using namespace std;
 
 #define DEFAULT_LIBOR_GRID 0.0027, 0.0192, 0.0833, 0.1667, 0.2500, 0.5000, 1
 #define DEFAULT_LIBOR_GRID_NUM 7
@@ -283,7 +279,9 @@ void YieldCurve::liborInterpolation(){
 
 //bootstrapMethod
 void YieldCurve::bootstrap(){
-	
+
+	using std::log;
+
 	//SwapRateを0.5年刻みで補間
 	for(int i = 0; i < NUM_OF_INTPLTDSWPGRD; i++){
 		interpolatedSwapGrid[i] = 1 + i *0.5;

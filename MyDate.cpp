@@ -1,10 +1,7 @@
 
-#include <iostream>
-#include <cmath>
-#include <string>
-#include <sstream>
 #include "MyDate.h"
-using namespace std;
+using std::string;
+using std::stringstream;
 
 
 //constructor
@@ -154,6 +151,18 @@ int MyDate::calcDateDiff(MyDate date1, MyDate date2){
 	int julDate1 = stringToJulian(date1.getDate());
 	int julDate2 = stringToJulian(date2.getDate());
 	return (julDate2 - julDate1);
+}
+
+string MyDate::addDate(string date, int days){
+	int julDate = stringToJulian(date);
+	int addedJulDate = julDate + days;
+	return julianToString(addedJulDate);
+}
+
+string MyDate::addDate(MyDate date, int days){
+	int julDate = stringToJulian(date.getDate());
+	int addedJulDate = julDate + days;
+	return julianToString(addedJulDate);
 }
 
 

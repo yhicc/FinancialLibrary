@@ -3,7 +3,8 @@
 #define YIELDCURVE_H_INCLUDED_
 
 #include <string>
-using namespace std;
+#include <cmath>
+using std::string;
 
 #define NUM_OF_LIBORGRD 7
 #define NUM_OF_INTPLTDSWPGRD 59
@@ -12,7 +13,7 @@ using namespace std;
 class YieldCurve{
 
 private:
-	
+
 	string currency;
 	double defaultGridLibor[NUM_OF_LIBORGRD];
 	double defaultLiborGrid[NUM_OF_LIBORGRD];

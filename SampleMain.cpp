@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 #include "YieldCurve.h"
-using namespace std;
-
+using std::cout;
+using std::endl;
 
 //配列画面表示関数（double）
 void printout(double *arr, int size){
