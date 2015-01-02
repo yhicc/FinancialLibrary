@@ -2,15 +2,13 @@
 #ifndef MYDATE_H_INCLUDED_
 #define MYDATE_H_INCLUDED_
 
-#include <sstream>
 #include <string>
-using std::string;
 
 class MyDate{
 
 private:
 
-	string strDate;	//yyyymmdd format
+	std::string strDate;	//yyyymmdd format
 	int julianDay;
 
 
@@ -19,26 +17,26 @@ public:
 
 	//constructor
 	MyDate();
-	MyDate(string date);
+	MyDate(std::string date);
 
 	//destructor
 //	~MyDate();
 
 	//setter
-	void setDate(string date);
+	void setDate(std::string date);
 	void setJulianDay(int julDay);
 
 	//getter
-	string getDate();
+	std::string getDate();
 	int getJulianDay();
 
 	//utilFunc
-	int stringToJulian(string date);
-	string julianToString(int julDay);
-	int calcDateDiff(string date1, string date2);
+	int stringToJulian(std::string date);
+	std::string julianToString(int julDay);
+	int calcDateDiff(std::string date1, std::string date2);
 	int calcDateDiff(MyDate date1, MyDate date2);
-	string addDate(string date, int days);
-	string addDate(MyDate date, int days);
+	std::string addDate(std::string date, int days);
+	std::string addDate(MyDate date, int days);
 
 };
 

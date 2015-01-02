@@ -2,6 +2,8 @@
 #include "YieldCurve.h"
 #include <cmath>
 
+using std::string;
+
 #define DEFAULT_LIBOR_GRID 0.0027, 0.0192, 0.0833, 0.1667, 0.2500, 0.5000, 1
 #define DEFAULT_LIBOR_GRID_NUM 7
 #define NUM_OF_INTPLTDSWPGRD 59

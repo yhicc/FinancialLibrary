@@ -3,8 +3,6 @@
 #define YIELDCURVE_H_INCLUDED_
 
 #include <string>
-//#include <cmath>
-using std::string;
 
 #define NUM_OF_LIBORGRD 7
 #define NUM_OF_INTPLTDSWPGRD 59
@@ -14,7 +12,7 @@ class YieldCurve{
 
 private:
 
-	string currency;
+	std::string currency;
 	double defaultGridLibor[NUM_OF_LIBORGRD];
 	double defaultLiborGrid[NUM_OF_LIBORGRD];
 	double *libor;
@@ -61,7 +59,7 @@ public:
 	//Constructor
 	YieldCurve();
 	YieldCurve(
-		string currency, 
+		std::string currency, 
 		const double *liborValue, 
 		int liborGridNum, 
 		const double *liborgrid, 
@@ -74,12 +72,12 @@ public:
 	~YieldCurve();
 
 	//setter
-	void setcur(string cur);
+	void setcur(std::string cur);
 	void setlibor(const double *liborValue, const double *liborgrid, int liborGridNum);
 	void setswapRate(const double *swapValue, int swapGridNum, const double *swapgrid);
 	
 	//getter
-	string getcur();
+	std::string getcur();
 	void getLibor(double *liborVal);
 	void getSwapRate(double *swapRateVal);
 	

@@ -1,7 +1,7 @@
 
+#include "YieldCurve.h"
 #include <iostream>
 #include <string>
-#include "YieldCurve.h"
 using std::cout;
 using std::endl;
 

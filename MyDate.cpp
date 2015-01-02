@@ -1,5 +1,7 @@
 
 #include "MyDate.h"
+#include <sstream>
+
 using std::string;
 using std::stringstream;
 
