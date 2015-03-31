@@ -1,6 +1,7 @@
 
 #include "MyDate.h"
 #include <sstream>
+#include <iostream>
 
 using std::string;
 using std::stringstream;
@@ -165,6 +166,75 @@ string MyDate::addDate(MyDate date, int days){
 	int julDate = stringToJulian(date.getDate());
 	int addedJulDate = julDate + days;
 	return julianToString(addedJulDate);
+}
+
+string MyDate::addMonth(string date, int months){
+	//string -> int
+	string strY = date.substr(0, 4);
+	string strM = date.substr(4, 2);
+	string strD = date.substr(6, 2);
+	int year;
+	stringstream ss(strY);
+	ss >> year;
+	ss.str("");
+	ss.clear(stringstream::goodbit);
+	int month;
+	ss.str(strM);
+	ss >> month;
+	ss.str("");
+	ss.clear(stringstream::goodbit);
+	int day;
+	ss.str(strD);
+	ss >> day;
+	ss.str("");
+	ss.clear(stringstream::goodbit);
+	
+	//add month
+	int addedMonth = month + months;
+	if(addedMonth > 12){
+		year++;
+		addedMonth = addedMonth - 12;
+	}
+	//end of month adjustment
+	if(addedMonth == 2){
+		if(day > 28){
+			day = day - 28;
+			addedMonth++;
+		}
+	}
+	if(day > 30){
+		if(addedMonth == 4 || addedMonth == 6 || addedMonth == 9 || addedMonth == 11){
+			addedMonth++;
+			day = day - 30;
+		}
+	}
+	
+	//int -> string
+	ss << year;
+	strY = ss.str();
+	int length = strY.length();
+	int i = 0;
+	while(i < (4 - length)){
+		strY = "0" + strY;
+		i++;
+	}
+	ss.str("");
+	ss << addedMonth;
+	strM = ss.str();
+	if(strM.length() == 1){
+		strM = "0" + strM;
+	}
+	ss.str("");
+	ss << day;
+	strD = ss.str();
+	ss.str("");
+	ss.clear(stringstream::goodbit);
+	if(strD.length() == 1){
+		strD = "0" + strD;
+	}
+
+	return strY + strM + strD;
+
 }
 
 

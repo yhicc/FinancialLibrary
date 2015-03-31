@@ -37,6 +37,8 @@ public:
 	int calcDateDiff(MyDate date1, MyDate date2);
 	std::string addDate(std::string date, int days);
 	std::string addDate(MyDate date, int days);
+	std::string addMonth(std::string date, int months);
+//	std::string addMonth(MyDate date, int months);
 
 };
 
