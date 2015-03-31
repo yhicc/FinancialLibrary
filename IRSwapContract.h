@@ -23,10 +23,6 @@ private:
 	double *floatRate;
 	int *floatRateTerm;
 	int numOfFloatRateGrid;
-//	double *floatLegCF;
-//	int numOfRestLegCF;
-//	double *fixedLegCF;
-//	int numOfFixedLegCF;
 	double PV;
 	
 	double interpolate(double preGrid, double postGrid, 
@@ -38,6 +34,7 @@ private:
 public:
 	
 	IRSwapContract();
+	~IRSwapContract();
 	void setValuationDate(string date);
 	void setEffectiveDate(string date);
 	void setCurrency(string cur);

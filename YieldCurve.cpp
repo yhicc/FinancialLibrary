@@ -186,7 +186,7 @@ void YieldCurve::getDiscountFactor(double *DF){
 }
 
 
-//グリッド指定ありのGetZeroRate
+//GetZeroRate(designation grid)
 void YieldCurve::getZeroRate(double *rtnZeroRate, int gridNum, const double *grid){
 	NumOfDesignatedGrid = gridNum;
 	if(designatedGrid != NULL){
@@ -199,7 +199,7 @@ void YieldCurve::getZeroRate(double *rtnZeroRate, int gridNum, const double *gri
 	if(buildZeroRateFlag != 1){
 		buildYieldCurve();
 	}
-	//指定されたGridに補間
+	//Interpolation to designated grid
 	//ZeroRate
 	if(designatedZeroRate != NULL){
 		delete[] designatedZeroRate;
@@ -227,7 +227,7 @@ void YieldCurve::getDiscountFactor(double *DF, int gridNum, const double *grid){
 	if(buildZeroRateFlag != 1){
 		buildYieldCurve();
 	}
-	//指定されたGridに補間
+	//Interpolation to designated grid
 	//DF
 	if(designatedDiscountFactor != NULL){
 		delete[] designatedDiscountFactor;
@@ -253,7 +253,7 @@ double YieldCurve::interpolate(double preGrid, double postGrid, double preValue,
 //InterpolateRangeMethod
 double YieldCurve::interpolateRange(double targetGrid, double *gridArray, double *valueArray, int numOfArray){
 	int i;
-	//targetGridの値が範囲外の場合は最大最小値の値を返す
+	//if targetgrid is out of argument range, return extrapolation value
 	if(targetGrid <= gridArray[0]){
 		return valueArray[0];
 	}else if(targetGrid >= gridArray[numOfArray-1]){
@@ -274,11 +274,11 @@ void YieldCurve::buildYieldCurve(){
 
 
 void YieldCurve::liborInterpolation(){
-	//Liborを補間
+	//Interpolation LIBOR
 	for(int i = 0; i < DEFAULT_LIBOR_GRID_NUM; i++){
 		defaultGridLibor[i] = interpolateRange(defaultLiborGrid[i], liborGrid, libor, DEFAULT_LIBOR_GRID_NUM);
 	}
-	//Libor to DF
+	//LIBOR to DF
 	for(int i = 0; i < DEFAULT_LIBOR_GRID_NUM; i++){
 		defaultDiscountFactor[i] = 1 / (1 + defaultGridLibor[i] * defaultLiborGrid[i]);
 	}
@@ -290,7 +290,7 @@ void YieldCurve::bootstrap(){
 
 	using std::log;
 
-	//SwapRateを0.5年刻みで補間
+	//Interpolate SwapRate every half a year
 	for(int i = 0; i < NUM_OF_INTPLTDSWPGRD; i++){
 		interpolatedSwapGrid[i] = 1 + i *0.5;
 	}

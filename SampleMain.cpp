@@ -1,16 +1,12 @@
 
 #include "YieldCurve.h"
+#include "MyDate.h"
+#include "IRSwapContract.h"
 #include <iostream>
 #include <string>
 using std::cout;
 using std::endl;
 
-//配列画面表示関数（double）
-void printout(double *arr, int size){
-	for(int i = 0; i < size; i++){
-		cout << arr[i] << endl;
-	}
-}
 
 int main(void){
 	
@@ -21,43 +17,56 @@ int main(void){
 	int liborGridNum = 7;
 	int swapGridNum = 15;
 	
-	YieldCurve ycv("JPY", liborArr, liborGridNum, liborGrid, swapArr, swapGridNum, swapGrid);
+	YieldCurve *ycv;
+	ycv = new YieldCurve("JPY", liborArr, liborGridNum, liborGrid, swapArr, swapGridNum, swapGrid);
 	
-	//グリッド指定なしでZeroRateを取得
+	//get ZeroRate
 	int defaultSize = 65;
 	double *zeroRate = new double[defaultSize];
-	ycv.getZeroRate(zeroRate);
+	ycv->getZeroRate(zeroRate);
+		
+	//get default(on YieldCurve Class) grid
+	double *defaultGrid = new double[defaultSize];
+	ycv->getDefaultGrid(defaultGrid);
 	
-	//グリッド指定なしでDFを取得
-	double *DF = new double[defaultSize];
-	ycv.getDiscountFactor(DF);
+	//valuate Swap Contract
+	string valuationDate = "20141215";
+	string effectiveDate = "20130601";
+	string currency = "JPY";
+	int fixedOrFloatPayer = 0;
+	double notionalAmount = 100000000;
+	double contractTerm = 5;
+	double paymentPeriod = 0.5;
+	double fixedRate = 0.08;
+	double preFixedFloatRate = 0.003;
+	//transrform grid to number of days from years
+	int *floatRateTerm = new int[defaultSize];
+	for(int i = 0; i < defaultSize; i++){
+		floatRateTerm[i] = defaultGrid[i] * 365;
+	}
 	
-	cout << "-----ZeroRate-----" << endl;
-	printout(zeroRate, defaultSize);
-	cout << "-----DF-----" << endl;
-	printout(DF, defaultSize);
-	
-	
-	//グリッド指定ありでZeroRateを取得
-	double grid[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-	int gridNum = 20;
-	double *desZeroRate = new double[gridNum];
-	ycv.getZeroRate(desZeroRate, gridNum, grid);
-	
-	//グリッド指定ありでDFを取得
-	double *desDF = new double[gridNum];
-	ycv.getDiscountFactor(desDF, gridNum, grid);
-	
-	cout << "-----DesZeroRate-----" << endl;
-	printout(desZeroRate, gridNum);
-	cout << "-----DesDF-----" << endl;
-	printout(desDF, gridNum);
-	
-	delete[] zeroRate;
-	delete[] DF;
-	delete[] desZeroRate;
-	delete[] desDF;
+	IRSwapContract *swapcont;
+	swapcont = new IRSwapContract();
+	swapcont->setValuationDate(valuationDate);
+	swapcont->setEffectiveDate(effectiveDate);
+	swapcont->setCurrency(currency);
+	swapcont->setFixedOrFloatPayer(fixedOrFloatPayer);
+	swapcont->setNotionalAmount(notionalAmount);
+	swapcont->setContractTerm(contractTerm);
+	swapcont->setPaymentPeriod(paymentPeriod);
+	swapcont->setFixedRate(fixedRate);
+	swapcont->setNextFloatRate(preFixedFloatRate);
+	swapcont->setFloatRate(zeroRate, floatRateTerm, defaultSize);
 
+	double PV = swapcont->calcPV();
+	cout << "PV = " << PV << endl;
+
+	delete[] zeroRate;
+	delete[] defaultGrid;
+	delete[] floatRateTerm;
+	delete ycv;
+	delete swapcont;
+	
 	return 0;
 
 }

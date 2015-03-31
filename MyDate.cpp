@@ -1,7 +1,6 @@
 
 #include "MyDate.h"
 #include <sstream>
-#include <iostream>
 
 using std::string;
 using std::stringstream;
@@ -17,13 +16,6 @@ MyDate::MyDate(string date){
 	julianDay = 0;
 }
 
-
-//destructor
-/*
-MyDate::~MyDate(){
-
-}
-*/
 
 //setter
 void MyDate::setDate(string date){

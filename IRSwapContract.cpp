@@ -1,7 +1,6 @@
 
 #include "IRSwapContract.h"
 #include "MyDate.h"
-#include <iostream>
 #include <string>
 using std::string;
 
@@ -70,11 +69,6 @@ void IRSwapContract::setFloatRate(const double *rate, const int *term, int numOf
 }
 
 
-//getter
-
-
-
-
 //calcPV
 double IRSwapContract::calcPV(){
 	int numOfFixing = (int)(contractTerm / paymentPeriod);
@@ -89,7 +83,6 @@ double IRSwapContract::calcPV(){
 	}
 	int numOfRestLegCF = numOfFixing - numOfFixed;
 	nextRateFixingDate = tmpDate;
-	std::cout << nextRateFixingDate << std::endl;
 	double *fixedLegCF;
 	fixedLegCF = new double[numOfRestLegCF];
 	double *floatLegCF;
@@ -167,7 +160,7 @@ double IRSwapContract::interpolate(double preGrid, double postGrid, double preVa
 //InterpolateRange Method
 double IRSwapContract::interpolateRange(int targetGrid, int *gridArray, double *valueArray, int numOfArray){
 	int i;
-	//targetGridの値が範囲外の場合は最大最小値の値を返す
+	//if targetgrid is out of argument range, return extrapolation value
 	if(targetGrid <= gridArray[0]){
 		return valueArray[0];
 	}else if(targetGrid >= gridArray[numOfArray-1]){

@@ -19,9 +19,6 @@ public:
 	MyDate();
 	MyDate(std::string date);
 
-	//destructor
-//	~MyDate();
-
 	//setter
 	void setDate(std::string date);
 	void setJulianDay(int julDay);
@@ -38,7 +35,6 @@ public:
 	std::string addDate(std::string date, int days);
 	std::string addDate(MyDate date, int days);
 	std::string addMonth(std::string date, int months);
-//	std::string addMonth(MyDate date, int months);
 
 };
 
