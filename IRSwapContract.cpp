@@ -2,7 +2,6 @@
 #include "IRSwapContract.h"
 #include "MyDate.h"
 #include <string>
-#include <iostream>
 using std::string;
 
 
@@ -126,6 +125,7 @@ double IRSwapContract::calcPV(){
 			discountedFloatLegCF[i] = floatLegCF[i] * discountFactor;
 		}
 		floatLegVal = floatLegVal + discountedFloatLegCF[i];
+		
 		//Next CF Term set
 		preCfTerm = cfTerm;
 		cfDate = mydate.addMonth(cfDate, (12 * paymentPeriod));
