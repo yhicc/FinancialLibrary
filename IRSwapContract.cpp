@@ -1,7 +1,7 @@
 
 #include "IRSwapContract.h"
 #include "MyDate.h"
-#include <string>aa
+#include <string>
 using std::string;
 
 
