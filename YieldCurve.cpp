@@ -159,6 +159,11 @@ void YieldCurve::getinterpolatedSwapRate(double *interpolatedSwapRateVal){
 		interpolatedSwapRateVal[i] = interpolatedSwapRate[i];
 	}
 }
+void YieldCurve::getDefaultGrid(double *defaultZRGrid){
+	for(int i = 0; i < NUM_OF_DEFAULT_ZRRTGRD; i++){
+		defaultZRGrid[i] = defaultZeroRateGrid[i];
+	}
+}
 
 void YieldCurve::getZeroRate(double *rtnZeroRate){
 	if(buildZeroRateFlag != 1){

@@ -81,6 +81,8 @@ public:
 	void getLibor(double *liborVal);
 	void getSwapRate(double *swapRateVal);
 	
+	void getDefaultGrid(double *defaultZRGrid);
+	
 	void getDiscountFactor(double *DF);
 	void getDiscountFactor(double *DF, int gridNum, const double *grid);
 	void getZeroRate(double *rtnZeroRate);
