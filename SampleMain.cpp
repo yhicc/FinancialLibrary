@@ -33,12 +33,12 @@ int main(void){
 	string valuationDate = "20141215";
 	string effectiveDate = "20130601";
 	string currency = "JPY";
-	int fixedOrFloatPayer = 0;
+	int fixedOrFloatPayer = 1;
 	double notionalAmount = 100000000;
 	double contractTerm = 5;
 	double paymentPeriod = 0.5;
-	double fixedRate = 0.08;
-	double preFixedFloatRate = 0.003;
+	double fixedRate = 0.002;
+	double preFixedFloatRate = 0.0025;
 	//transrform grid to number of days from years
 	int *floatRateTerm = new int[defaultSize];
 	for(int i = 0; i < defaultSize; i++){

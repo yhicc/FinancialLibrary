@@ -29,7 +29,7 @@ private:
 						double preValue, double postValue, double targetGrid);
 	double interpolateRange(int targetGrid, int *gridArray, 
 											double *valueArray, int numOfArray);
-	double calcForwardRate(double startTermZR, double endTermZR);
+	double calcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm);
 	
 public:
 	

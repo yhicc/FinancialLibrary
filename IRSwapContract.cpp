@@ -2,6 +2,7 @@
 #include "IRSwapContract.h"
 #include "MyDate.h"
 #include <string>
+#include <iostream>
 using std::string;
 
 
@@ -95,6 +96,7 @@ double IRSwapContract::calcPV(){
 	double fixedLegVal = 0;
 	double floatLegVal = 0;
 	int cfTerm = mydate.calcDateDiff(valuationDate, nextRateFixingDate);
+	int preCfTerm = 0;
 	double discountFactor = 0;
 	double zeroRate = 0;
 	double preZeroRate = 0;
@@ -119,13 +121,13 @@ double IRSwapContract::calcPV(){
 			discountedFloatLegCF[i] = floatLegCF[i] * discountFactor;
 		//calc Forward Rate
 		}else{
-			forwardRate = calcForwardRate(preZeroRate, zeroRate);
+			forwardRate = calcForwardRate(preZeroRate, preCfTerm, zeroRate, cfTerm);
 			floatLegCF[i] = notionalAmount * forwardRate;
 			discountedFloatLegCF[i] = floatLegCF[i] * discountFactor;
 		}
 		floatLegVal = floatLegVal + discountedFloatLegCF[i];
-		
 		//Next CF Term set
+		preCfTerm = cfTerm;
 		cfDate = mydate.addMonth(cfDate, (12 * paymentPeriod));
 		cfTerm = mydate.calcDateDiff(valuationDate, cfDate);
 		//preZeroRate set
@@ -145,7 +147,11 @@ double IRSwapContract::calcPV(){
 		delete[] discountedFloatLegCF;
 	}
 	
-	PV = fixedLegVal + floatLegVal;
+	if(fixedOrFloatPayer == 1){
+		PV = floatLegVal - fixedLegVal;
+	}else{
+		PV = fixedLegVal - floatLegVal;
+	}
 	return PV;
 	
 }
@@ -174,8 +180,8 @@ double IRSwapContract::interpolateRange(int targetGrid, int *gridArray, double *
 }
 
 //CalcForwardRate Method
-double IRSwapContract::calcForwardRate(double startTermZR, double endTermZR){
-	double forwardRate = (1 + endTermZR) / (1 + startTermZR) - 1;
+double IRSwapContract::calcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm){
+	double forwardRate = ((endTermZR * endTerm) - (startTermZR * startTerm)) / (endTerm - startTerm);
 	return forwardRate;
 }
 
