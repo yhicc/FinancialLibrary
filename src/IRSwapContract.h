@@ -20,9 +20,9 @@ private:
 	double paymentPeriod;
 	double fixedRate;
 	double nextFloatRate;
-	double *floatRate;
-	int *floatRateTerm;
-	int numOfFloatRateGrid;
+//	double *floatRate;
+//	int *floatRateTerm;
+//	int numOfFloatRateGrid;
 	double PV;
 	
 	double interpolate(double preGrid, double postGrid, 
@@ -34,7 +34,7 @@ private:
 public:
 	
 	IRSwapContract();
-	~IRSwapContract();
+	virtual ~IRSwapContract();
 	void setValuationDate(string date);
 	void setEffectiveDate(string date);
 	void setCurrency(string cur);
@@ -44,9 +44,9 @@ public:
 	void setPaymentPeriod(double period);
 	void setFixedRate(double rate);
 	void setNextFloatRate(double rate);
-	void setFloatRate(const double *rate, const int *term, int numOfGrid);
+//	void setFloatRate(const double *rate, const int *term, int numOfGrid);
 	
-	double calcPV();
+	double calcPV(const double *rate, const int *term, int numOfGrid);
 
 };
 

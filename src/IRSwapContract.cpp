@@ -7,18 +7,22 @@ using std::string;
 
 //constructor
 IRSwapContract::IRSwapContract(){
+/*
 	floatRate = NULL;
 	floatRateTerm = NULL;
+*/
 }
 
 //Destructor
 IRSwapContract::~IRSwapContract(){
+/*
 	if(floatRate != NULL){
 		delete[] floatRate;
 	}
 	if(floatRateTerm != NULL){
 		delete[] floatRateTerm;
 	}
+*/
 }
 
 
@@ -50,6 +54,7 @@ void IRSwapContract::setFixedRate(double rate){
 void IRSwapContract::setNextFloatRate(double rate){
 	nextFloatRate = rate;
 }
+/*		float rate was changed to be passed as argument for calcPV() function.
 void IRSwapContract::setFloatRate(const double *rate, const int *term, int numOfGrid){
 	numOfFloatRateGrid = numOfGrid;
 	if(floatRate != NULL){
@@ -67,10 +72,22 @@ void IRSwapContract::setFloatRate(const double *rate, const int *term, int numOf
 		floatRateTerm[i] = term[i];
 	}
 }
+*/
 
-
-//calcPV
-double IRSwapContract::calcPV(){
+//calcPV Func
+double IRSwapContract::calcPV(const double *rate, const int *term, int numOfGrid){
+	int numOfFloatRateGrid = numOfGrid;
+	double *floatRate;
+	floatRate = new double[numOfFloatRateGrid];
+	for(int i = 0; i < numOfFloatRateGrid; i++){
+		floatRate[i] = rate[i];
+	}
+	int *floatRateTerm;
+	floatRateTerm = new int[numOfFloatRateGrid];
+	for(int i = 0; i < numOfFloatRateGrid; i++){
+		floatRateTerm[i] = term[i];
+	}
+	
 	int numOfFixing = (int)(contractTerm / paymentPeriod);
 	int numOfFixed = 0;
 	string tmpDate = effectiveDate;
@@ -95,14 +112,17 @@ double IRSwapContract::calcPV(){
 	double fixedLegVal = 0;
 	double floatLegVal = 0;
 	int cfTerm = mydate.calcDateDiff(valuationDate, nextRateFixingDate);
-	int preCfTerm = 0;
+	int preCfTerm = 0;			//for calc forward rate
 	double discountFactor = 0;
 	double zeroRate = 0;
-	double preZeroRate = 0;
-	double forwardRate = 0;
+	double preZeroRate = 0;		//for calc forward rate
+	double forwardRate = 0;		
 	string cfDate = nextRateFixingDate;
+	
+	//calculate each cashflow(discounted value)
+	//add each cashflow value to fixedLegVal and floatLegVal 
 	for(int i = 0; i < numOfRestLegCF; i++){
-		//calc ZR and DF
+		//calc ZR and DF at cashflow term
 		zeroRate = interpolateRange(cfTerm, floatRateTerm, floatRate, numOfFloatRateGrid);
 		for(int i = 0; i < numOfFloatRateGrid; i++){
 			discountFactor = 1 / (1 + zeroRate);
@@ -126,7 +146,7 @@ double IRSwapContract::calcPV(){
 		}
 		floatLegVal = floatLegVal + discountedFloatLegCF[i];
 		
-		//Next CF Term set
+		//set next CF term
 		preCfTerm = cfTerm;
 		cfDate = mydate.addMonth(cfDate, (12 * paymentPeriod));
 		cfTerm = mydate.calcDateDiff(valuationDate, cfDate);
@@ -134,6 +154,12 @@ double IRSwapContract::calcPV(){
 		preZeroRate = zeroRate;
 	}
 	
+	if(floatRate != NULL){
+		delete[] floatRate;
+	}
+	if(floatRateTerm != NULL){
+		delete[] floatRateTerm;
+	}
 	if(fixedLegCF != NULL){
 		delete[] fixedLegCF;
 	}
@@ -156,14 +182,14 @@ double IRSwapContract::calcPV(){
 	
 }
 
-//Interpolate Method
+//Interpolate Func
 double IRSwapContract::interpolate(double preGrid, double postGrid, double preValue, double postValue, double targetGrid){
 	double targetValue = 0;
 	targetValue = preValue + (postValue - preValue) / (postGrid - preGrid) * (targetGrid - preGrid);
 	return targetValue;
 }
 
-//InterpolateRange Method
+//InterpolateRange Func
 double IRSwapContract::interpolateRange(int targetGrid, int *gridArray, double *valueArray, int numOfArray){
 	int i;
 	//if targetgrid is out of argument range, return extrapolation value
@@ -179,7 +205,7 @@ double IRSwapContract::interpolateRange(int targetGrid, int *gridArray, double *
 	return interpolate(gridArray[i-1], gridArray[i], valueArray[i-1], valueArray[i], targetGrid);
 }
 
-//CalcForwardRate Method
+//CalcForwardRate Func
 double IRSwapContract::calcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm){
 	double forwardRate = ((endTermZR * endTerm) - (startTermZR * startTerm)) / (endTerm - startTerm);
 	return forwardRate;

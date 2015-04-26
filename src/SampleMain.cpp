@@ -56,9 +56,9 @@ int main(void){
 	swapcont->setPaymentPeriod(paymentPeriod);
 	swapcont->setFixedRate(fixedRate);
 	swapcont->setNextFloatRate(preFixedFloatRate);
-	swapcont->setFloatRate(zeroRate, floatRateTerm, defaultSize);
+//	swapcont->setFloatRate(zeroRate, floatRateTerm, defaultSize);
 
-	double PV = swapcont->calcPV();
+	double PV = swapcont->calcPV(zeroRate, floatRateTerm, defaultSize);
 	cout << "PV = " << PV << endl;
 
 	delete[] zeroRate;

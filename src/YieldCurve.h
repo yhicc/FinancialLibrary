@@ -69,8 +69,8 @@ public:
 	);
 	
 	//Destructor
-	~YieldCurve();
-
+	virtual ~YieldCurve();
+	
 	//setter
 	void setcur(std::string cur);
 	void setlibor(const double *liborValue, const double *liborgrid, int liborGridNum);

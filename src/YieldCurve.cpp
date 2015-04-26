@@ -243,14 +243,14 @@ void YieldCurve::getDiscountFactor(double *DF, int gridNum, const double *grid){
 	return;
 }
 
-//InterpolateMethod
+//Interpolate Func
 double YieldCurve::interpolate(double preGrid, double postGrid, double preValue, double postValue, double targetGrid){
 	double targetValue = 0;
 	targetValue = preValue + (postValue - preValue) / (postGrid - preGrid) * (targetGrid - preGrid);
 	return targetValue;
 }
 
-//InterpolateRangeMethod
+//InterpolateRange Func
 double YieldCurve::interpolateRange(double targetGrid, double *gridArray, double *valueArray, int numOfArray){
 	int i;
 	//if targetgrid is out of argument range, return extrapolation value
@@ -285,7 +285,7 @@ void YieldCurve::liborInterpolation(){
 }
 
 
-//bootstrapMethod
+//bootstrap Func
 void YieldCurve::bootstrap(){
 
 	using std::log;
