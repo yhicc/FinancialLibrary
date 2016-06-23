@@ -3,94 +3,43 @@
 #define YIELDCURVE_H_INCLUDED_
 
 #include <string>
+#include <vector>
+#include <memory>
 
-#define NUM_OF_LIBORGRD 7
-#define NUM_OF_INTPLTDSWPGRD 59
-#define NUM_OF_DEFAULT_ZRRTGRD 65
 
 class YieldCurve{
 
-private:
-
-	std::string currency;
-	double defaultGridLibor[NUM_OF_LIBORGRD];
-	double defaultLiborGrid[NUM_OF_LIBORGRD];
-	double *libor;
-	int numOfLiborGrid;
-	double *liborGrid;
-	double *swapRate;
-	int numOfSwapGrid;
-	double *swapGrid;
-	double interpolatedSwapRate[NUM_OF_INTPLTDSWPGRD];
-	double interpolatedSwapGrid[NUM_OF_INTPLTDSWPGRD];
-	double defaultDiscountFactor[NUM_OF_DEFAULT_ZRRTGRD];
-	double defaultZeroRate[NUM_OF_DEFAULT_ZRRTGRD];
-	double defaultZeroRateGrid[NUM_OF_DEFAULT_ZRRTGRD];
-	double *designatedDiscountFactor;
-	double *designatedZeroRate;
-	int NumOfDesignatedGrid;
-	double *designatedGrid;
-	int numOfZeroRateGrid;
-	int buildZeroRateFlag;
-	
-	//interpolateMethod
-	double interpolate(
-		double preGrid, 
-		double postGrid, 
-		double preValue, 
-		double postValue, 
-		double targetGrid);
-	
-	//interpolateRangeMethod
-	double interpolateRange(
-		double targetGrid, 
-		double *gridArray, 
-		double *valueArray, 
-		int numOfArray);
-	
-	//bootstrapMethod
-	void bootstrap();
-	
-	void liborInterpolation();
-	
-	
 public:
 	
 	//Constructor
 	YieldCurve();
-	YieldCurve(
-		std::string currency, 
-		const double *liborValue, 
-		int liborGridNum, 
-		const double *liborgrid, 
-		const double *swapValue, 
-		int swapGridNum, 
-		const double *swapgrid
-	);
 	
 	//Destructor
 	virtual ~YieldCurve();
 	
 	//setter
-	void setcur(std::string cur);
-	void setlibor(const double *liborValue, const double *liborgrid, int liborGridNum);
-	void setswapRate(const double *swapValue, int swapGridNum, const double *swapgrid);
+	void SetBaseDate(const std::string &base_date);
+	void SetCurrency(const std::string &cur);
+	//cash rate for ON, TN, 1W, 2W, 1M, 2M, 3M, 6M and 12M
+	void SetCashRate(const std::vector<double> &cash_rate_value);
+	//tem is the number of year
+	void SetSwapRate(const std::vector<double> &swap_term, const std::vector<double> &swap_rate);
 	
 	//getter
-	std::string getcur();
-	void getLibor(double *liborVal);
-	void getSwapRate(double *swapRateVal);
+	std::string GetBaseDate();
+	std::string GetCurrency();
+	void GetCashRate(std::vector<double> &cashrate);
+	void GetSwapRate(std::vector<double> &swap_term, std::vector<double> &swap_rate);
 	
-	void getDefaultGrid(double *defaultZRGrid);
+	//Build Yield Curve function
+	void CalcDiscountFactor(std::vector<double> &df);
+	void CalcZeroRate(std::vector<double> &zero_rate);
 	
-	void getDiscountFactor(double *DF);
-	void getDiscountFactor(double *DF, int gridNum, const double *grid);
-	void getZeroRate(double *rtnZeroRate);
-	void getZeroRate(double *rtnZeroRate, int gridNum, const double *grid);
 	
-	void getinterpolatedSwapRate(double *interpolatedSwapRateVal);
+private:
 	
-	void buildYieldCurve();
+	class YieldCurveImpl;
+	std::unique_ptr<YieldCurveImpl> m_yieldcurve_impl;
 	
 };
 
