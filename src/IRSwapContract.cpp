@@ -1,192 +1,117 @@
 
 #include "IRSwapContract.h"
-#include "MyDate.h"
+#include "DateUtil.h"
 #include <string>
 using std::string;
 
 
-//constructor
-IRSwapContract::IRSwapContract(){
-/*
-	floatRate = NULL;
-	floatRateTerm = NULL;
-*/
-}
-
 //Destructor
 IRSwapContract::~IRSwapContract(){
-/*
-	if(floatRate != NULL){
-		delete[] floatRate;
-	}
-	if(floatRateTerm != NULL){
-		delete[] floatRateTerm;
-	}
-*/
 }
 
-
-//setter
-void IRSwapContract::setValuationDate(string date){
-	valuationDate = date;
+void IRSwapContract::SetContractInfo(const std::string &effective_date, const std::string &currency,
+						int fixed_or_float, double notional_amount, double contract_term,
+						double payment_period, double fixed_rate, double next_float_rate){
+	m_effective_date = effective_date;
+	m_currency = currency;
+	m_fixed_or_float_payer = fixed_or_float;
+	m_notional_amount = notional_amount;
+	m_contract_term = contract_term;
+	m_payment_period = payment_period;
+	m_fixed_rate = fixed_rate;
+	m_next_float_rate = next_float_rate;
 }
-void IRSwapContract::setEffectiveDate(string date){
-	effectiveDate = date;
-}
-void IRSwapContract::setCurrency(string cur){
-	currency = cur;
-}
-void IRSwapContract::setFixedOrFloatPayer(int f){
-	fixedOrFloatPayer = f;
-}
-void IRSwapContract::setNotionalAmount(double amount){
-	notionalAmount = amount;
-}
-void IRSwapContract::setContractTerm(double term){
-	contractTerm = term;
-}
-void IRSwapContract::setPaymentPeriod(double period){
-	paymentPeriod = period;
-}
-void IRSwapContract::setFixedRate(double rate){
-	fixedRate = rate;
-}
-void IRSwapContract::setNextFloatRate(double rate){
-	nextFloatRate = rate;
-}
-/*		float rate was changed to be passed as argument for calcPV() function.
-void IRSwapContract::setFloatRate(const double *rate, const int *term, int numOfGrid){
-	numOfFloatRateGrid = numOfGrid;
-	if(floatRate != NULL){
-		delete[] floatRate;
-	}
-	floatRate = new double[numOfFloatRateGrid];
-	for(int i = 0; i < numOfFloatRateGrid; i++){
-		floatRate[i] = rate[i];
-	}
-	if(floatRateTerm != NULL){
-		delete[] floatRateTerm;
-	}
-	floatRateTerm = new int[numOfFloatRateGrid];
-	for(int i = 0; i < numOfFloatRateGrid; i++){
-		floatRateTerm[i] = term[i];
-	}
-}
-*/
 
 //calcPV Func
-double IRSwapContract::calcPV(const double *rate, const int *term, int numOfGrid){
-	int numOfFloatRateGrid = numOfGrid;
-	double *floatRate;
-	floatRate = new double[numOfFloatRateGrid];
-	for(int i = 0; i < numOfFloatRateGrid; i++){
-		floatRate[i] = rate[i];
-	}
-	int *floatRateTerm;
-	floatRateTerm = new int[numOfFloatRateGrid];
-	for(int i = 0; i < numOfFloatRateGrid; i++){
-		floatRateTerm[i] = term[i];
-	}
+double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vector<int> &floating_rate_term, const std::vector<double> &floating_rate_value, 
+								const std::vector<int> &discount_curve_term, const std::vector<double> &discount_curve_value){
 	
-	int numOfFixing = (int)(contractTerm / paymentPeriod);
-	int numOfFixed = 0;
-	string tmpDate = effectiveDate;
-	MyDate mydate;
-	for(int i = 0; i <= numOfFixed; i++){
-		if(mydate.stringToJulian(valuationDate) > mydate.stringToJulian(tmpDate)){
-			numOfFixed++;
-			tmpDate = mydate.addMonth(tmpDate, (12 * paymentPeriod));
+	int num_of_CF = (int)(m_contract_term / m_payment_period);
+	int num_of_paid_CF = 0;
+	DateUtil dateutil;
+	std::string tmp_date = dateutil.addMonth(m_effective_date, (12 * m_payment_period), "MF");
+	for(int i = 0; i <= num_of_paid_CF; i++){
+		if(dateutil.stringToJulian(valuation_date) > dateutil.stringToJulian(tmp_date)){
+			num_of_paid_CF++;
+			tmp_date = dateutil.addMonth(tmp_date, (12 * m_payment_period), "MF");
 		}
 	}
-	int numOfRestLegCF = numOfFixing - numOfFixed;
-	nextRateFixingDate = tmpDate;
-	double *fixedLegCF;
-	fixedLegCF = new double[numOfRestLegCF];
-	double *floatLegCF;
-	floatLegCF = new double[numOfRestLegCF];
+	int num_of_unpaid_CF = num_of_CF - num_of_paid_CF;
+	std::string next_rate_fixing_date = tmp_date;	
 	
-	double *discountedFixedLegCF;
-	double *discountedFloatLegCF;
-	discountedFixedLegCF = new double[numOfRestLegCF];
-	discountedFloatLegCF = new double[numOfRestLegCF];
-	double fixedLegVal = 0;
-	double floatLegVal = 0;
-	int cfTerm = mydate.calcDateDiff(valuationDate, nextRateFixingDate);
-	int preCfTerm = 0;			//for calc forward rate
-	double discountFactor = 0;
-	double zeroRate = 0;
-	double preZeroRate = 0;		//for calc forward rate
+	//calculate each leg value
+	//declear needed valiables
+	int num_of_days_to_interest_end_date = dateutil.calcDateDiff(valuation_date, next_rate_fixing_date);;
+	int num_of_days_to_interest_start_date = 0;		//for calc forward rate
+	double discount_factor = 0;
+	double discount_zero_rate = 0;
+	double floating_rate_to_interest_end_date = 0;
+	double floating_rate_to_interest_start_date = 0;	//for calc forward rate
 	double forwardRate = 0;		
-	string cfDate = nextRateFixingDate;
-	
-	//calculate each cashflow(discounted value)
-	//add each cashflow value to fixedLegVal and floatLegVal 
-	for(int i = 0; i < numOfRestLegCF; i++){
-		//calc ZR and DF at cashflow term
-		zeroRate = interpolateRange(cfTerm, floatRateTerm, floatRate, numOfFloatRateGrid);
-		for(int i = 0; i < numOfFloatRateGrid; i++){
-			discountFactor = 1 / (1 + zeroRate);
-		}
+	string cashflow_date = next_rate_fixing_date;	//cashflow date is interest end date
+	double fixed_leg_CF;
+	double float_leg_CF;
+	double discounted_fixed_leg_CF;
+	double discounted_float_leg_CF;
+	double fixed_leg_value = 0;
+	double float_leg_value = 0;
+	//calc each cashflow and add those valuee to fixed_leg_value and float_leg_value
+	for(int i = 0; i < num_of_unpaid_CF; i++){
+		//calc ZR and DF to cashflow date
+		//for discount
+		discount_zero_rate = InterpolateRange(num_of_days_to_interest_end_date, discount_curve_term, discount_curve_value);
+		discount_factor = 1 / (1 + discount_zero_rate);
+		//for projection
+		floating_rate_to_interest_end_date = InterpolateRange(num_of_days_to_interest_end_date, floating_rate_term, floating_rate_value);
 		
 		//Fixed Leg CF Calculation
-		fixedLegCF[i] = notionalAmount * fixedRate;
-		discountedFixedLegCF[i] = fixedLegCF[i] * discountFactor;
-		fixedLegVal = fixedLegVal + discountedFixedLegCF[i];
+		fixed_leg_CF = m_notional_amount * m_fixed_rate;
+		discounted_fixed_leg_CF = fixed_leg_CF * discount_factor;
+		fixed_leg_value = fixed_leg_value + discounted_fixed_leg_CF;
 		
 		//Floating Leg CF Calculation
 		//preFixedFloatRate
 		if(i == 0){
-			floatLegCF[i] = notionalAmount * nextFloatRate;
-			discountedFloatLegCF[i] = floatLegCF[i] * discountFactor;
+			float_leg_CF = m_notional_amount * m_next_float_rate;
+			discounted_float_leg_CF = float_leg_CF * discount_factor;
 		//calc Forward Rate
 		}else{
-			forwardRate = calcForwardRate(preZeroRate, preCfTerm, zeroRate, cfTerm);
-			floatLegCF[i] = notionalAmount * forwardRate;
-			discountedFloatLegCF[i] = floatLegCF[i] * discountFactor;
+			forwardRate = CalcForwardRate(floating_rate_to_interest_start_date, num_of_days_to_interest_start_date, 
+											floating_rate_to_interest_end_date, num_of_days_to_interest_end_date);
+			float_leg_CF = m_notional_amount * forwardRate;
+			discounted_float_leg_CF = float_leg_CF * discount_factor;
 		}
-		floatLegVal = floatLegVal + discountedFloatLegCF[i];
+		float_leg_value = float_leg_value + discounted_float_leg_CF;
 		
 		//set next CF term
-		preCfTerm = cfTerm;
-		cfDate = mydate.addMonth(cfDate, (12 * paymentPeriod));
-		cfTerm = mydate.calcDateDiff(valuationDate, cfDate);
-		//preZeroRate set
-		preZeroRate = zeroRate;
+		num_of_days_to_interest_start_date = num_of_days_to_interest_end_date;
+		cashflow_date = dateutil.addMonth(cashflow_date, (12 * m_payment_period), "MF");
+		num_of_days_to_interest_end_date = dateutil.calcDateDiff(valuation_date, cashflow_date);
+		//set floating rate to interest start date for next cashflow
+		floating_rate_to_interest_start_date = floating_rate_to_interest_end_date;
 	}
 	
-	if(floatRate != NULL){
-		delete[] floatRate;
-	}
-	if(floatRateTerm != NULL){
-		delete[] floatRateTerm;
-	}
-	if(fixedLegCF != NULL){
-		delete[] fixedLegCF;
-	}
-	if(floatLegCF != NULL){
-		delete[] floatLegCF;
-	}
-	if(discountedFixedLegCF != NULL){
-		delete[] discountedFixedLegCF;
-	}
-	if(discountedFloatLegCF != NULL){
-		delete[] discountedFloatLegCF;
-	}
-	
-	if(fixedOrFloatPayer == 1){
-		PV = floatLegVal - fixedLegVal;
+	double pv;
+	if(m_fixed_or_float_payer == 1){
+		pv = float_leg_value - fixed_leg_value;
 	}else{
-		PV = fixedLegVal - floatLegVal;
+		pv = fixed_leg_value - float_leg_value;
 	}
-	return PV;
-	
+	return pv;
 }
+
+
 
 //Interpolate Func
 double IRSwapContract::interpolate(double preGrid, double postGrid, double preValue, double postValue, double targetGrid){
 	double targetValue = 0;
 	targetValue = preValue + (postValue - preValue) / (postGrid - preGrid) * (targetGrid - preGrid);
 	return targetValue;
+}
+double IRSwapContract::Interpolate(int target_term, int pre_term, int post_term, double pre_value, double post_value){
+	double target_value = 0;
+	target_value = pre_value + (post_value - pre_value) / (post_term - pre_term) * (target_term - pre_term);
+	return target_value;
 }
 
 //InterpolateRange Func
@@ -204,9 +129,25 @@ double IRSwapContract::interpolateRange(int targetGrid, int *gridArray, double *
 	}
 	return interpolate(gridArray[i-1], gridArray[i], valueArray[i-1], valueArray[i], targetGrid);
 }
+double IRSwapContract::InterpolateRange(int target_term, const std::vector<int> &term, const std::vector<double> &value){
+	int i;
+	//if targetgrid is out of argument range, return extrapolated value
+	if(target_term <= term[0]){
+		return value[0];
+	}else if(target_term >= term[term.size()-1]){
+		return value[value.size()-1];
+	//if target grid is in argument range, return linear interpolated value
+	}else{
+		//search interval
+		for(i = 1; i < term.size(); i++){
+			if(term[i] >= target_term) break;
+		}
+		return Interpolate(target_term, term[i-1], term[i], value[i-1], value[i]);
+	}
+}
 
 //CalcForwardRate Func
-double IRSwapContract::calcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm){
+double IRSwapContract::CalcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm){
 	double forwardRate = ((endTermZR * endTerm) - (startTermZR * startTerm)) / (endTerm - startTerm);
 	return forwardRate;
 }

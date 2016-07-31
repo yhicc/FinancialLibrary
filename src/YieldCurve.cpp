@@ -1,6 +1,7 @@
 
 #include "YieldCurve.h"
 #include "DateUtil.h"
+#include "FinLibException.h"
 #include <cmath>
 
 #define DEFAULT_LIBOR_GRID 1, 7, 30, 60, 90, 180, 360
@@ -72,15 +73,10 @@ void YieldCurve::SetCurrency(const std::string &cur){
 
 void YieldCurve::SetCashRate(const std::vector<double> &cash_rate_value){
 	//check arguments
-//	if(libor_term.size() != libor_value.size()){
-//		// throw exception
-//	}
-	
-/*	m_cash_rate_term.clear();
-	for(int i = 0; i < libor_term.size(); ++i){
-		m_cash_rate_term.push_back(cash_rate_term[i]);
+	if(cash_rate_value.size() != NUM_OF_CASH_RATE_TERM){
+		throw FinLibException("Bad argument for SetCashRate method : Terms of cash rates don't match with defined ones.");
 	}
-*/	
+	
 	m_yieldcurve_impl->m_cash_rate_value.clear();
 	for(int i = 0; i < NUM_OF_CASH_RATE_TERM; ++i){
 		m_yieldcurve_impl->m_cash_rate_value.push_back(cash_rate_value[i]);
@@ -91,9 +87,9 @@ void YieldCurve::SetCashRate(const std::vector<double> &cash_rate_value){
 
 void YieldCurve::SetSwapRate(const std::vector<double> &swap_term, const std::vector<double> &swap_rate){
 	//check arguments を後で作る
-//	if(swap_term.size() != swap_value.size()){
-//		// throw exception
-//	}
+	if(swap_term.size() != swap_rate.size()){
+		throw FinLibException("Bad argument for SetSwapRate method : The number of items of swap terms and swap rates don't match.");
+	}
 	
 	m_yieldcurve_impl->m_swap_rate_term.clear();
 	for(int i = 0; i < swap_term.size(); ++i){
@@ -206,7 +202,16 @@ double YieldCurve::YieldCurveImpl::InterpolateRange(int target_term, const std::
 
 
 void YieldCurve::YieldCurveImpl::BuildZeroCurve(){
-	// vectorのclearを入れる！
+	
+	//check if required data is set
+	if(m_cash_rate_value.size() == 0){
+		throw FinLibException("Lack of required data for Building Yield Curve : Cash rates haven't benn set.");
+	}
+	if(m_swap_rate_value.size() == 0){
+		throw FinLibException("Lack of required data for Building Yield Curve : Swap rates haven't benn set.");
+	}
+	
+	
 	m_zero_rate_value.clear();
 	m_discount_factor_value.clear();
 	
