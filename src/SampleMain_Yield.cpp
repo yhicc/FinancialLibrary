@@ -1,5 +1,6 @@
 
 #include "YieldCurve.h"
+#include "FinLibException.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,17 +15,23 @@ int main(void){
 	
 	std::string cur = "JPY";
 	
-	
 	YieldCurve *ycv;
 	ycv = new YieldCurve();
-	ycv->SetBaseDate("20160617");
-	ycv->SetCurrency(cur);
-	ycv->SetCashRate(liborArr);
-	ycv->SetSwapRate(swapGrid, swapArr);
-	//get ZeroRate
 	vector<double> zeroRate(67);
-	ycv->CalcZeroRate(zeroRate);
 	
+	try{
+		ycv->SetBaseDate("20160617");
+		ycv->SetCurrency(cur);
+		ycv->SetCashRate(liborArr);
+		ycv->SetSwapRate(swapGrid, swapArr);
+		//get ZeroRate
+		ycv->CalcZeroRate(zeroRate);
+	}catch(FinLibException &e){
+		std::cout << "Error!" << std::endl;
+		std::cout << e.What() << std::endl;
+		delete ycv;
+		return 0;
+	}
 	
 	//print check
 	std::cout << "Base date : " << ycv->GetBaseDate() << std::endl;
@@ -37,6 +44,8 @@ int main(void){
 	for(int i = 0; i < zeroRate.size(); i++){
 		std::cout << termArray[i] << " : " <<zeroRate[i] << std::endl;
 	}
+	
+	delete ycv;
 	
 	return 0;
 
