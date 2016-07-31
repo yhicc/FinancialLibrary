@@ -20,6 +20,7 @@ private:
 	double m_payment_period;	//6month = 0.5
 	double m_fixed_rate;
 	double m_next_float_rate;
+	int m_contract_info_set_flag;
 	
 	double interpolate(double preGrid, double postGrid, 
 						double preValue, double postValue, double targetGrid);
@@ -31,7 +32,7 @@ private:
 	
 public:
 	
-//	IRSwapContract();
+	IRSwapContract();
 	virtual ~IRSwapContract();
 	void SetContractInfo(const std::string &effective_date, const std::string &currency,
 							int fixed_or_float, double notional_amount, double contract_term,

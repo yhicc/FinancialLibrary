@@ -1,9 +1,14 @@
 
 #include "IRSwapContract.h"
 #include "DateUtil.h"
+#include "FinLibException.h"
 #include <string>
-using std::string;
 
+
+//constructor
+IRSwapContract::IRSwapContract(){
+	m_contract_info_set_flag = 0;
+}
 
 //Destructor
 IRSwapContract::~IRSwapContract(){
@@ -20,11 +25,16 @@ void IRSwapContract::SetContractInfo(const std::string &effective_date, const st
 	m_payment_period = payment_period;
 	m_fixed_rate = fixed_rate;
 	m_next_float_rate = next_float_rate;
+	m_contract_info_set_flag = 1;
 }
 
 //calcPV Func
 double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vector<int> &floating_rate_term, const std::vector<double> &floating_rate_value, 
 								const std::vector<int> &discount_curve_term, const std::vector<double> &discount_curve_value){
+	//check if contract info is set or not
+	if(m_contract_info_set_flag == 0){
+		throw FinLibException("Contract information to calc PV has not been set.");
+	}
 	
 	int num_of_CF = (int)(m_contract_term / m_payment_period);
 	int num_of_paid_CF = 0;
@@ -48,7 +58,7 @@ double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vect
 	double floating_rate_to_interest_end_date = 0;
 	double floating_rate_to_interest_start_date = 0;	//for calc forward rate
 	double forwardRate = 0;		
-	string cashflow_date = next_rate_fixing_date;	//cashflow date is interest end date
+	std::string cashflow_date = next_rate_fixing_date;	//cashflow date is interest end date
 	double fixed_leg_CF;
 	double float_leg_CF;
 	double discounted_fixed_leg_CF;

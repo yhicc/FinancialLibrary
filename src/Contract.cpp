@@ -2,6 +2,7 @@
 #include "Contract.h"
 #include "BaseContract.h"
 #include "IRSwapContract.h"
+#include "FinLibException.h"
 #include <string>
 
 
@@ -27,9 +28,9 @@ Contract::Contract(const std::string &product){
 		m_contract_impl.reset(new ContractImpl());
 		m_contract_impl->CreateContract(product);
 	}
-//	else if{
-//		
-//	}
+	else if{
+		throw FinLibException("Bad argument for Contract constructor : The product name is not covered.");
+	}
 }
 
 //Destructor
