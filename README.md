@@ -1,5 +1,6 @@
 FinancialLibrary
 ==================
 
-This library is the functions to provide financial calculations.
+FinancialLibrary is C++ library to provide financial calculations such as building yield curve and pricing derivatives.
 
+#Desctiprion
