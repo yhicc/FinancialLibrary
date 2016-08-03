@@ -23,13 +23,19 @@ public:
 	//cash rate for ON, TN, 1W, 2W, 1M, 2M, 3M, 6M and 12M
 	void SetCashRate(const std::vector<double> &cash_rate_value);
 	//tem is the number of year
-	void SetSwapRate(const std::vector<double> &swap_term, const std::vector<double> &swap_rate);
+	void SetSwapRate(
+		const std::vector<double> &swap_term, 
+		const std::vector<double> &swap_rate
+	);
 	
 	//getter
 	std::string GetBaseDate();
 	std::string GetCurrency();
 	void GetCashRate(std::vector<double> &cashrate);
-	void GetSwapRate(std::vector<double> &swap_term, std::vector<double> &swap_rate);
+	void GetSwapRate(
+		std::vector<double> &swap_term, 
+		std::vector<double> &swap_rate
+	);
 	
 	//Build Yield Curve function
 	void CalcDiscountFactor(std::vector<double> &df);

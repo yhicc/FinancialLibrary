@@ -9,7 +9,6 @@
 class Contract::ContractImpl{
 public:
 	
-	ContractImpl(std::string &product);
 	void SetContractInfo(const std::string &effective_date, const std::string &currency,
 							int fixed_or_float, double notional_amount, double contract_term,
 							double payment_period, double fixed_rate, double next_float_rate);	
@@ -24,11 +23,10 @@ public:
 
 //constructor
 Contract::Contract(const std::string &product){
-	if(product == "IRS"){
+	if(product == "IRSwap"){
 		m_contract_impl.reset(new ContractImpl());
 		m_contract_impl->CreateContract(product);
-	}
-	else if{
+	}else{
 		throw FinLibException("Bad argument for Contract constructor : The product name is not covered.");
 	}
 }
@@ -40,7 +38,7 @@ Contract::~Contract(){
 void Contract::SetContractInfo(const std::string &effective_date, const std::string &currency,
 						int fixed_or_float, double notional_amount, double contract_term,
 						double payment_period, double fixed_rate, double next_float_rate){
-	m_contract_impl->SetContractInfo((effective_date, currency, fixed_or_float, notional_amount, 
+	m_contract_impl->SetContractInfo(effective_date, currency, fixed_or_float, notional_amount, 
 						contract_term, payment_period, fixed_rate, next_float_rate);
 }
 
@@ -58,7 +56,7 @@ double Contract::CalcPV(const std::string &valuation_date, const std::vector<int
 void Contract::ContractImpl::SetContractInfo(const std::string &effective_date, const std::string &currency,
 						int fixed_or_float, double notional_amount, double contract_term,
 						double payment_period, double fixed_rate, double next_float_rate){
-	m_contract->SetContractInfo((effective_date, currency, fixed_or_float, notional_amount, 
+	m_contract->SetContractInfo(effective_date, currency, fixed_or_float, notional_amount, 
 						contract_term, payment_period, fixed_rate, next_float_rate);
 }
 
