@@ -6,13 +6,13 @@ FinancialLibrary is C++ library to provide financial calculations such as buildi
 
 #Example of using FinancialLibrary
 
-    \#include "YieldCurve.h"  
-    \#include "Contract.h"  
-    \#include "FinLibException.h"  
-    \#include \<iostream\>  
-    \#include \<string\>  
-    \#include \<vector\>  
-    \#include \<memory\>  
+    #include "YieldCurve.h"  
+    #include "Contract.h"  
+    #include "FinLibException.h"  
+    #include <iostream>  
+    #include <string>  
+    #include <vector>  
+    #include <memory>  
     
     int main(void){
     	
