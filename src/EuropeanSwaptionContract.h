@@ -11,7 +11,6 @@
 class EuropeanSwaptionContract : public BaseContract{
 
 private:
-//	underlying_swap_
 	std::string m_effective_date;
 	std::string m_currency;
 	int m_receiver_or_payer;	//0 == receiver, 1 == payer
