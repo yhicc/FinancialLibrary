@@ -5,15 +5,15 @@ FinancialLibrary is C++ library to provide financial calculations such as buildi
   
   
 
-#Description
+##Description
 FinancialLibrary provides following functions.
 
-1.Building Yield Curve 
-  .Calculating zero rate from cash rate and swap rate 
+1.Building Yield Curve  
+	-Calculating zero rate from cash rate and swap rate 
 
-2.Pricing Contract 
-  .Pricing Interest Rate Swap 
-  .Pricing European Swaption 
+2.Pricing Contract  
+	-Pricing Interest Rate Swap  
+	-Pricing European Swaption 
   
 ##Example of using FinancialLibrary
 
