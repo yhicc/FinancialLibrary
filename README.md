@@ -27,11 +27,10 @@ ycv.reset(new YieldCurve());
 2nd step is setting base date, cash rate and swap rate to Yield Curve instance.  
 ```
 ycv->SetBaseDate("20160617");
-ycv->SetCurrency(cur);
 ycv->SetCashRate(libor);
 ycv->SetSwapRate(swap_grid, swap_rate);  
 ```
-3rd step is call Cal Zero Rate function. At this time, user pass array to set calculated zero rate to the function.  
+3rd step is call CalcZeroRate function. At this time, user pass array to set calculated zero rate to the function.  
 ```
 ycv->CalcZeroRate(zeroRate);  
 ```
@@ -47,7 +46,7 @@ irs.reset(new Contract("IRSwap"));
 ```
 irs->SetContractInfo("20160713", "JPY", 1, 1000000, 3, 0.5, 0.03, 0.01);
 ```
-3rd step is call Calc PV function.  
+3rd step is call CalcPV function.  
 ```
 pv = irs->CalcPV("20160719", float_rate_term, float_rate_value, zero_rate_term, zero_rate_value);  
 ```
