@@ -12,8 +12,8 @@ FinancialLibrary provides following functions.
 	-Calculating zero rate from cash rate and swap rate 
 
 2.Pricing Contract  
-	-Pricing Interest Rate Swap  
-	-Pricing European Swaption 
+	-Pricing Interest Rate Swap (DCF method)  
+	-Pricing European Swaption  (Black's model)
   
 ##Example of using FinancialLibrary
 
