@@ -18,7 +18,7 @@ FinancialLibrary provides following functions.
 ##Usage
 Commands are examples.  
   
-1.Building Yield Curve  
+####1.Building Yield Curve  
 1st step is creating Yield Curve instance.  
 ```
 std::unique_ptr<YieldCurve> ycv;
@@ -37,7 +37,7 @@ ycv->CalcZeroRate(zeroRate);
 ```
   
   
-2.Pricing Contract  
+####2.Pricing Contract  
 1st step is creating Contract instance. At this time, user has to designate product name by passing argument to constructor.  
 ```
 std::unique_ptr<Contract> irs;
