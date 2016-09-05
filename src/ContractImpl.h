@@ -1,19 +1,15 @@
 
-#ifndef BASE_CONTRACT_H_INCLUDED_
-#define BASE_CONTRACT_H_INCLUDED_
-
-#include "FinLibException.h"
+#include "Contract.h"
+#include "BaseContract.h"
 #include "SwaptionVolatility.h"
 #include <string>
-#include <memory>
-#include <vector>
 
-class BaseContract{
-	
+
+class Contract::ContractImpl{
 public:
 	
 	// for setting IR Swap contract info
-	virtual void SetContractInfo(
+	void SetContractInfo(
 		const std::string &effective_date, 
 		const std::string &currency, 
 		int fixed_or_float, 
@@ -21,13 +17,11 @@ public:
 		double contract_term, 
 		double payment_period, 
 		double fixed_rate, 
-		double next_float_rate)
-	{
-		throw FinLibException("Bad argument for SetContractInfo");
-	}
+		double next_float_rate
+	);
 	
 	// for setting European Swaption contract info
-	virtual void SetContractInfo(
+	void SetContractInfo(
 		const std::string &effective_date, 
 		const std::string &currency, 
 		int receiver_or_payer, 
@@ -36,24 +30,20 @@ public:
 		double underlying_swap_notional_amount, 
 		double underlying_swap_contract_term, 
 		double underlying_swap_payment_period, 
-		double strike_swap_rate)
-	{
-		throw FinLibException("Bad argument for SetContractInfo");
-	}
+		double strike_swap_rate
+	);
 	
 	// for calculating IR Swap PV
-	virtual double CalcPV(
+	double CalcPV(
 		const std::string &valuation_date, 
 		const std::vector<int> &floating_rate_term, 
 		const std::vector<double> &floating_rate_value, 
 		const std::vector<int> &discount_curve_term, 
-		const std::vector<double> &discount_curve_value)
-	{
-		throw FinLibException("Bad argument for CalcPV");
-	}
+		const std::vector<double> &discount_curve_value
+	);
 	
 	// for calculating European Swaption PV
-	virtual double CalcPV(
+	double CalcPV(
 		const std::string &valuation_date, 
 		const std::vector<int> &floating_rate_term, 
 		const std::vector<double> &floating_rate_value, 
@@ -62,13 +52,13 @@ public:
 		const std::vector<SwaptionVolatility> &volatility_set, 
 		int num_of_vol_strike_rate, 
 		int num_of_vol_underlying_term_grid, 
-		int num_of_vol_option_term_grid)
-	{
-		throw FinLibException("Bad argument for CalcPV");
-	}
+		int num_of_vol_option_term_grid
+	);
+	
+	std::unique_ptr<BaseContract> m_contract;
+	void CreateContract(const std::string &product);
 	
 };
 
 
-#endif
 
