@@ -221,22 +221,6 @@ double EuropeanSwaptionContract::Interpolate(int target_term, int pre_term, int 
 }
 
 //InterpolateRange Func
-/*
-double EuropeanSwaptionContract::interpolateRange(int targetGrid, int *gridArray, double *valueArray, int numOfArray){
-	int i;
-	//if targetgrid is out of argument range, return extrapolation value
-	if(targetGrid <= gridArray[0]){
-		return valueArray[0];
-	}else if(targetGrid >= gridArray[numOfArray-1]){
-		return valueArray[numOfArray-1];
-	}
-	
-	for(i = 1; i < numOfArray; i++){
-		if(gridArray[i] >= targetGrid) break;
-	}
-	return Interpolate(gridArray[i-1], gridArray[i], valueArray[i-1], valueArray[i], targetGrid);
-}
-*/
 double EuropeanSwaptionContract::InterpolateRange(int target_term, const std::vector<int> &term, const std::vector<double> &value){
 	int i;
 	//if targetgrid is out of argument range, return extrapolated value

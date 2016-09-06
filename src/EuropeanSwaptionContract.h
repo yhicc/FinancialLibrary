@@ -13,7 +13,7 @@ class EuropeanSwaptionContract : public BaseContract{
 private:
 	std::string m_effective_date;
 	std::string m_currency;
-	int m_receiver_or_payer;	//0 == receiver, 1 == payer
+	int m_receiver_or_payer;					//0 == receiver, 1 == payer
 	std::string m_option_maturity_date;
 	std::string m_underlying_swap_start_date;
 	double m_underlying_swap_notional_amount;
