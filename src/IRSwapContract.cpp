@@ -1,6 +1,7 @@
 
 #include "IRSwapContract.h"
 #include "DateUtil.h"
+#include "CalcUtil.h"
 #include "FinLibException.h"
 #include <string>
 
@@ -39,6 +40,7 @@ double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vect
 	int num_of_CF = (int)(m_contract_term / m_payment_period);
 	int num_of_paid_CF = 0;
 	DateUtil dateutil;
+	CalcUtil calc_util;
 	std::string tmp_date = dateutil.addMonth(m_effective_date, (12 * m_payment_period), "MF");
 	for(int i = 0; i <= num_of_paid_CF; i++){
 		if(dateutil.stringToJulian(valuation_date) > dateutil.stringToJulian(tmp_date)){
@@ -69,10 +71,10 @@ double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vect
 	for(int i = 0; i < num_of_unpaid_CF; i++){
 		//calc ZR and DF to cashflow date
 		//for discount
-		discount_zero_rate = InterpolateRange(num_of_days_to_interest_end_date, discount_curve_term, discount_curve_value);
+		discount_zero_rate = calc_util.InterpolateRange(num_of_days_to_interest_end_date, discount_curve_term, discount_curve_value);
 		discount_factor = 1 / (1 + discount_zero_rate);
 		//for projection
-		floating_rate_to_interest_end_date = InterpolateRange(num_of_days_to_interest_end_date, floating_rate_term, floating_rate_value);
+		floating_rate_to_interest_end_date = calc_util.InterpolateRange(num_of_days_to_interest_end_date, floating_rate_term, floating_rate_value);
 		
 		//Fixed Leg CF Calculation
 		fixed_leg_CF = m_notional_amount * m_fixed_rate;
@@ -86,7 +88,7 @@ double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vect
 			discounted_float_leg_CF = float_leg_CF * discount_factor;
 		//calc Forward Rate
 		}else{
-			forwardRate = CalcForwardRate(floating_rate_to_interest_start_date, num_of_days_to_interest_start_date, 
+			forwardRate = calc_util.CalcForwardRate(floating_rate_to_interest_start_date, num_of_days_to_interest_start_date, 
 											floating_rate_to_interest_end_date, num_of_days_to_interest_end_date);
 			float_leg_CF = m_notional_amount * forwardRate;
 			discounted_float_leg_CF = float_leg_CF * discount_factor;
@@ -108,58 +110,6 @@ double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vect
 		pv = fixed_leg_value - float_leg_value;
 	}
 	return pv;
-}
-
-
-
-//Interpolate Func
-double IRSwapContract::interpolate(double preGrid, double postGrid, double preValue, double postValue, double targetGrid){
-	double targetValue = 0;
-	targetValue = preValue + (postValue - preValue) / (postGrid - preGrid) * (targetGrid - preGrid);
-	return targetValue;
-}
-double IRSwapContract::Interpolate(int target_term, int pre_term, int post_term, double pre_value, double post_value){
-	double target_value = 0;
-	target_value = pre_value + (post_value - pre_value) / (post_term - pre_term) * (target_term - pre_term);
-	return target_value;
-}
-
-//InterpolateRange Func
-double IRSwapContract::interpolateRange(int targetGrid, int *gridArray, double *valueArray, int numOfArray){
-	int i;
-	//if targetgrid is out of argument range, return extrapolation value
-	if(targetGrid <= gridArray[0]){
-		return valueArray[0];
-	}else if(targetGrid >= gridArray[numOfArray-1]){
-		return valueArray[numOfArray-1];
-	}
-	
-	for(i = 1; i < numOfArray; i++){
-		if(gridArray[i] >= targetGrid) break;
-	}
-	return interpolate(gridArray[i-1], gridArray[i], valueArray[i-1], valueArray[i], targetGrid);
-}
-double IRSwapContract::InterpolateRange(int target_term, const std::vector<int> &term, const std::vector<double> &value){
-	int i;
-	//if targetgrid is out of argument range, return extrapolated value
-	if(target_term <= term[0]){
-		return value[0];
-	}else if(target_term >= term[term.size()-1]){
-		return value[value.size()-1];
-	//if target grid is in argument range, return linear interpolated value
-	}else{
-		//search interval
-		for(i = 1; i < term.size(); i++){
-			if(term[i] >= target_term) break;
-		}
-		return Interpolate(target_term, term[i-1], term[i], value[i-1], value[i]);
-	}
-}
-
-//CalcForwardRate Func
-double IRSwapContract::CalcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm){
-	double forwardRate = ((endTermZR * endTerm) - (startTermZR * startTerm)) / (endTerm - startTerm);
-	return forwardRate;
 }
 
 

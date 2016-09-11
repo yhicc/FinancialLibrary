@@ -2,7 +2,7 @@
 #ifndef CONTRACT_H_INCLUDED_
 #define CONTRACT_H_INCLUDED_
 
-#include "SwaptionVolatility.h"
+#include "VolatilityCube.h"
 #include <string>
 #include <memory>
 #include <vector>
@@ -55,7 +55,7 @@ public:
 		const std::vector<double> &floating_rate_value, 
 		const std::vector<int> &discount_curve_term, 
 		const std::vector<double> &discount_curve_value, 
-		const std::vector<SwaptionVolatility> &volatility_set, 
+		const std::vector<VolatilityCube> &volatility_set, 
 		int num_of_vol_strike_rate, 
 		int num_of_vol_underlying_term_grid, 
 		int num_of_vol_option_term_grid
