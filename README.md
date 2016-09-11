@@ -16,10 +16,11 @@ FinancialLibrary provides following functions.
 	-Pricing European Swaption  (Black's model)
 
 ##Usage
-Commands are examples.  
+This is the overall flow to use the library. The actual methods are described in doc/api_spec.txt.  
   
 ####1.Building Yield Curve  
-1st step is creating Yield Curve instance.  
+Users have to include YieldCurve.h and FinLibException.h.  
+1st step is creating Yield Curve object.  
 ```
 std::unique_ptr<YieldCurve> ycv;
 ycv.reset(new YieldCurve());  
@@ -37,7 +38,8 @@ ycv->CalcZeroRate(zeroRate);
   
   
 ####2.Pricing Contract  
-1st step is creating Contract instance. At this time, user has to designate product name by passing argument to constructor.  
+Users have to include Contract.h and FinLibException.h. Depending on product, additional header files have to be included.    
+1st step is creating Contract object. At this time, user has to designate product name by passing argument to constructor.  
 ```
 std::unique_ptr<Contract> irs;
 irs.reset(new Contract("IRSwap"));  
@@ -53,7 +55,7 @@ pv = irs->CalcPV("20160719", float_rate_term, float_rate_value, zero_rate_term, 
 
 
 ##Structure
-
+The internal structure of the library is described in doc/library_structure.txt
 
   
 ##Example of using FinancialLibrary
