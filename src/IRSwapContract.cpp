@@ -115,7 +115,7 @@ double IRSwapContract::CalcPV(
 		floating_rate_to_interest_start_date = floating_rate_to_interest_end_date;
 	}
 	
-	double pv;
+	double pv = 0;
 	if(m_fixed_or_float_payer == 1){
 		pv = float_leg_value - fixed_leg_value;
 	}else{

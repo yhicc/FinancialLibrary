@@ -120,7 +120,6 @@ double EuropeanSwaptionContract::CalcPV(
 	underlying_swap_term = dateutil.calcDateDiff(m_underlying_swap_start_date, underlying_swap_end_date);
 	int option_term_days = dateutil.calcDateDiff(valuation_date, m_option_maturity_date);
 	
-	
 	double volatility = 0;
 	volatility = calc_util.InterpolateVolatility(
 		m_strike_swap_rate, 
