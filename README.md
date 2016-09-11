@@ -38,7 +38,7 @@ ycv->CalcZeroRate(zeroRate);
   
   
 ####2.Pricing Contract  
-Users have to include Contract.h and FinLibException.h. Depending on product, additional header files have to be included.    
+Users have to include Contract.h and FinLibException.h. Depending on product, additional header files have to be included such as VolatilityCube.h.    
 1st step is creating Contract object. At this time, user has to designate product name by passing argument to constructor.  
 ```
 std::unique_ptr<Contract> irs;
