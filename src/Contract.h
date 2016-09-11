@@ -18,7 +18,7 @@ public:
 	void SetContractInfo(
 		const std::string &effective_date, 
 		const std::string &currency, 
-		int fixed_or_float, 
+		int fixed_or_float, 			// 0 == fixed payer, 1 == float payer
 		double notional_amount, 
 		double contract_term, 
 		double payment_period, 
@@ -30,7 +30,7 @@ public:
 	void SetContractInfo(
 		const std::string &effective_date, 
 		const std::string &currency, 
-		int receiver_or_payer, 
+		int receiver_or_payer, 					// 0 == receiver, 1 == payer
 		const std::string &option_maturity_date, 
 		const std::string &underlying_swap_start_date, 
 		double underlying_swap_notional_amount, 

@@ -14,7 +14,7 @@ private:
 	std::string m_effective_date;
 	std::string m_next_rate_fixing_date;
 	std::string m_currency;
-	int m_fixed_or_float_payer;		//1 == fixed, 2 == floating
+	int m_fixed_or_float_payer;		//0 == fixed, 1 == floating
 	double m_notional_amount;
 	double m_contract_term;		//1year = 1
 	double m_payment_period;	//6month = 0.5

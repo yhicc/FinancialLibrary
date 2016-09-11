@@ -116,7 +116,7 @@ double IRSwapContract::CalcPV(
 	}
 	
 	double pv = 0;
-	if(m_fixed_or_float_payer == 1){
+	if(m_fixed_or_float_payer == 0){
 		pv = float_leg_value - fixed_leg_value;
 	}else{
 		pv = fixed_leg_value - float_leg_value;
