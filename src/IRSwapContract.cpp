@@ -15,9 +15,16 @@ IRSwapContract::IRSwapContract(){
 IRSwapContract::~IRSwapContract(){
 }
 
-void IRSwapContract::SetContractInfo(const std::string &effective_date, const std::string &currency,
-						int fixed_or_float, double notional_amount, double contract_term,
-						double payment_period, double fixed_rate, double next_float_rate){
+void IRSwapContract::SetContractInfo(
+	const std::string &effective_date, 
+	const std::string &currency, 
+	int fixed_or_float, 
+	double notional_amount, 
+	double contract_term, 
+	double payment_period, 
+	double fixed_rate, 
+	double next_float_rate
+){
 	m_effective_date = effective_date;
 	m_currency = currency;
 	m_fixed_or_float_payer = fixed_or_float;
@@ -30,8 +37,13 @@ void IRSwapContract::SetContractInfo(const std::string &effective_date, const st
 }
 
 //calcPV Func
-double IRSwapContract::CalcPV(const std::string &valuation_date, const std::vector<int> &floating_rate_term, const std::vector<double> &floating_rate_value, 
-								const std::vector<int> &discount_curve_term, const std::vector<double> &discount_curve_value){
+double IRSwapContract::CalcPV(
+	const std::string &valuation_date, 
+	const std::vector<int> &floating_rate_term, 
+	const std::vector<double> &floating_rate_value, 
+	const std::vector<int> &discount_curve_term, 
+	const std::vector<double> &discount_curve_value
+){
 	//check if contract info is set or not
 	if(m_contract_info_set_flag == 0){
 		throw FinLibException("Contract information to calc PV has not been set.");

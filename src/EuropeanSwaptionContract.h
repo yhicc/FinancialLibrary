@@ -21,15 +21,7 @@ private:
 	double m_underlying_swap_payment_period;	//6month = 0.5
 	double m_strike_swap_rate;
 	int m_contract_info_set_flag;
-	
-	double Interpolate(double target_term, double pre_term, double post_term, double pre_value, double post_value);
-	double Interpolate(int target_term, int pre_term, int post_term, double pre_value, double post_value);
-	double interpolateRange(int targetGrid, int *gridArray, 
-											double *valueArray, int numOfArray);
-	double InterpolateRange(int target_term, const std::vector<int> &term, const std::vector<double> &value);
-	double CalcForwardRate(double startTermZR, int startTerm, double endTermZR, int endTerm);
-	double CalcNormDistProbability(double x, double average, double variance);
-	
+		
 public:
 	
 	EuropeanSwaptionContract();

@@ -27,8 +27,8 @@ void EuropeanSwaptionContract::SetContractInfo(
 	double underlying_swap_notional_amount, 
 	double underlying_swap_contract_term, 
 	double underlying_swap_payment_period, 
-	double strike_swap_rate)
-{
+	double strike_swap_rate
+){
 	m_effective_date = effective_date;
 	m_currency = currency;
 	m_receiver_or_payer = receiver_or_payer;
@@ -52,8 +52,8 @@ double EuropeanSwaptionContract::CalcPV(
 	const std::vector<VolatilityCube> &volatility_set, 
 	int num_of_vol_strike_rate, 
 	int num_of_vol_underlying_term_grid, 
-	int num_of_vol_option_term_grid)
-{
+	int num_of_vol_option_term_grid
+){
 	
 	//check if contract info is set or not
 	if(m_contract_info_set_flag == 0){
