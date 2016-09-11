@@ -1,6 +1,5 @@
 
 #include "EuropeanSwaptionContract.h"
-#include "SwaptionVolatility.h"
 #include "VolatilityCube.h"
 #include "CalcUtil.h"
 #include "DateUtil.h"

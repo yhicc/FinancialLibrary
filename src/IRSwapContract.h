@@ -12,7 +12,6 @@ class IRSwapContract : public BaseContract{
 private:
 	
 	std::string m_effective_date;
-	std::string m_next_rate_fixing_date;
 	std::string m_currency;
 	int m_fixed_or_float_payer;		//0 == fixed, 1 == floating
 	double m_notional_amount;
