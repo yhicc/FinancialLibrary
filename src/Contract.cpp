@@ -11,7 +11,7 @@
 
 //constructor
 Contract::Contract(const std::string &product){
-	if(product == "IRSwap" || product == "EuropeanSwaption"){
+	if("IRSwap" == product || "EuropeanSwaption" == product){
 		m_contract_impl.reset(new ContractImpl());
 		m_contract_impl->CreateContract(product);
 	}else{
@@ -32,8 +32,10 @@ void Contract::SetContractInfo(
 	double contract_term, 
 	double payment_period, 
 	double fixed_rate, 
-	double next_float_rate)
-{
+	double spread_on_index_rate, 
+	int day_count, 
+	double next_float_rate
+){
 	m_contract_impl->SetContractInfo(
 		effective_date, 
 		currency, 
@@ -42,6 +44,8 @@ void Contract::SetContractInfo(
 		contract_term, 
 		payment_period, 
 		fixed_rate, 
+		spread_on_index_rate, 
+		day_count, 
 		next_float_rate
 	);
 }
@@ -56,8 +60,10 @@ void Contract::SetContractInfo(
 	double underlying_swap_notional_amount, 
 	double underlying_swap_contract_term, 
 	double underlying_swap_payment_period, 
-	double strike_swap_rate)
-{
+	int underlying_swap_day_count, 
+	double undelying_swap_spread_on_index_rate, 
+	double strike_swap_rate
+){
 	m_contract_impl->SetContractInfo(
 		effective_date, 
 		currency, 
@@ -67,6 +73,8 @@ void Contract::SetContractInfo(
 		underlying_swap_notional_amount, 
 		underlying_swap_contract_term, 
 		underlying_swap_payment_period, 
+		underlying_swap_day_count, 
+		undelying_swap_spread_on_index_rate, 
 		strike_swap_rate
 	);
 }
@@ -74,38 +82,54 @@ void Contract::SetContractInfo(
 //calc PV of IR Swap Func
 double Contract::CalcPV(
 	const std::string &valuation_date, 
-	const std::vector<int> &floating_rate_term, 
-	const std::vector<double> &floating_rate_value, 
+	const std::vector<int> &index_rate_term,  
+	const std::vector<double> &index_rate_value, 
+	int index_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+	int index_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
 	const std::vector<int> &discount_curve_term, 
-	const std::vector<double> &discount_curve_value)
-{
+	const std::vector<double> &discount_curve_value, 
+	int discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+	int discount_rate_compound_period	// PA == 1, SA == 2, Continuous == 0
+){
 	return m_contract_impl->CalcPV(
 		valuation_date, 
-		floating_rate_term, 
-		floating_rate_value, 
+		index_rate_term,  
+		index_rate_value, 
+		index_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		index_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
 		discount_curve_term, 
-		discount_curve_value
+		discount_curve_value, 
+		discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		discount_rate_compound_period	// PA == 1, SA == 2, Continuous == 0
 	);
 }
 
 //calc PV of European Swaption Func
 double Contract::CalcPV(
 	const std::string &valuation_date, 
-	const std::vector<int> &floating_rate_term, 
-	const std::vector<double> &floating_rate_value, 
+	const std::vector<int> &index_rate_term, 
+	const std::vector<double> &index_rate_value, 
+	int index_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+	int index_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
 	const std::vector<int> &discount_curve_term, 
 	const std::vector<double> &discount_curve_value, 
+	int discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+	int discount_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
 	const std::vector<VolatilityCube> &volatility_set, 
 	int num_of_vol_strike_rate, 
 	int num_of_vol_underlying_term_grid, 
-	int num_of_vol_option_term_grid)
-{
+	int num_of_vol_option_term_grid
+){
 	return m_contract_impl->CalcPV(
 		valuation_date, 
-		floating_rate_term, 
-		floating_rate_value, 
+		index_rate_term, 
+		index_rate_value, 
+		index_rate_day_count_basis, 
+		index_rate_compound_period, 
 		discount_curve_term, 
 		discount_curve_value, 
+		discount_rate_day_count_basis, 
+		discount_rate_compound_period, 
 		volatility_set, 
 		num_of_vol_strike_rate, 
 		num_of_vol_underlying_term_grid, 

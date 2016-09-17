@@ -18,6 +18,8 @@ private:
 	double m_contract_term;		//1year = 1
 	double m_payment_period;	//6month = 0.5
 	double m_fixed_rate;
+	double m_spread_on_index_rate;
+	int m_day_count;
 	double m_next_float_rate;
 	int m_contract_info_set_flag;
 	
@@ -33,15 +35,21 @@ public:
 		double contract_term, 
 		double payment_period, 
 		double fixed_rate, 
+		double spread_on_index_rate, 
+		int day_count, 
 		double next_float_rate
 	);
 	
 	double CalcPV(
 		const std::string &valuation_date, 
-		const std::vector<int> &floating_rate_term, 
-		const std::vector<double> &floating_rate_value, 
+		const std::vector<int> &index_rate_term,  
+		const std::vector<double> &index_rate_value, 
+		int index_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		int index_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
 		const std::vector<int> &discount_curve_term, 
-		const std::vector<double> &discount_curve_value
+		const std::vector<double> &discount_curve_value, 
+		int discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		int discount_rate_compound_period	// PA == 1, SA == 2, Continuous == 0
 	);
 
 };
