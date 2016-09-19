@@ -25,7 +25,7 @@ This is the example and overall flow to use the library. The actual methods are 
 Users have to include Contract.h and FinLibException.h, but don't have to include each product class header file such as EuropeanSwaptionContract.h.  
 Depending on product, additional header files have to be included such as VolatilityCube.h.    
   
-This is in the case of European Swaption.  
+This is in the case of European Swaption. (Using flow is same, but arguments differ with each product.)  
 1st step is creating Contract object. At this time, users have to designate product name by passing argument to Contract constructor.  
 ```
 std::unique_ptr<Contract> eswpt;
