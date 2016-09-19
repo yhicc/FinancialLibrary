@@ -27,7 +27,7 @@ Users have to include YieldCurve.h and FinLibException.h.
 std::unique_ptr<YieldCurve> ycv;
 ycv.reset(new YieldCurve());  
 ```
-2nd step is setting base date, cash rate and swap rate to Yield Curve instance.  
+2nd step is setting base date, cash rate and swap rate to Yield Curve object.  
 ```
 ycv->SetBaseDate("20160617");
 ycv->SetCashRate(libor);
@@ -46,7 +46,7 @@ Users have to include Contract.h and FinLibException.h. Depending on product, ad
 std::unique_ptr<Contract> irs;
 irs.reset(new Contract("IRSwap"));  
 ```
-2nd step is setting contract information to Contract instance. Arguments differ with products.  
+2nd step is setting contract information to Contract object. Arguments differ with products.  
 ```
 irs->SetContractInfo("20160713", "JPY", 1, 1000000, 3, 0.5, 0.03, 0.01);
 ```
