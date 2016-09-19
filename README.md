@@ -50,29 +50,29 @@ eswpt.reset(new Contract("EuropeanSwaption"));
 ```
 eswpt->SetContractInfo(
 	"20160713", 	// Effective date
-	"JPY", 				//	Currency
-	1, 					// Receiver or Payer (Receiver = 0, Payer = 1)
+	"JPY", 			//	Currency
+	1, 				// Receiver or Payer (Receiver = 0, Payer = 1)
 	"20190822", 	// Swaption maturity date
-	0.03, 				// Strike swap rate
-	360, 				// Swaption day count convention (ACT/360 = 360, ACT/365 = 365)
+	0.03, 			// Strike swap rate
+	360, 			// Swaption day count convention (ACT/360 = 360, ACT/365 = 365)
 	"20190829", 	// Underlying swap start date
 	1000000, 		// Underlying swap notional amount
-	3, 					// Underlying swap contract term (Year unit)
-	0.5, 				// Underlying swap payment period (Year unit. Every 6 month = 0.5)
-	360, 				// Underlying swap day count convention (ACT/360 = 360, ACT/365 = 365)
+	3, 				// Underlying swap contract term (Year unit)
+	0.5, 			// Underlying swap payment period (Year unit. Every 6 month = 0.5)
+	360, 			// Underlying swap day count convention (ACT/360 = 360, ACT/365 = 365)
 	0.001, 			//  Underlying swap spread on index rate
 );
 ```
 3rd step is call CalcPV function.  
 ```
 pv = eswpt->CalcPV(
-	"20160719", 				// Valuation date
-	index_rate_term, 			// Vector of grids of index rate (The number of days)
-	index_rate_value, 			// Vector of index rate corresponding index_rate_term (This is zero rate)
+	"20160719", 					// Valuation date
+	index_rate_term, 				// Vector of grids of index rate (The number of days)
+	index_rate_value, 				// Vector of index rate corresponding index_rate_term (This is zero rate)
 	360, 							// Day count convention of index rate (ACT/360 = 360, ACT/365 = 365)
-	2, 									// Compounding period of index rate (PA = 1, SA = 2, Continuous = 0)
-	discount_rate_term, 	// Vector of grids of discount rate (The number of days)
-	discount_rate_value, 	// Vector of index rate corresponding discount_rate_term (This is zero rate)
+	2, 								// Compounding period of index rate (PA = 1, SA = 2, Continuous = 0)
+	discount_rate_term, 		// Vector of grids of discount rate (The number of days)
+	discount_rate_value,	 	// Vector of index rate corresponding discount_rate_term (This is zero rate)
 	360, 							// Day count convention of discount rate (ACT/360 = 360, ACT/365 = 365)
 	2, 								// Compounding period of indiscountdex rate (PA = 1, SA = 2, Continuous = 0)
 	volatility_set, 				// Vector of VolatilityCube(Structure of Strike rate, underlying term, option term and corresponding volatility)
