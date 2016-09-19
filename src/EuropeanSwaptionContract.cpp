@@ -22,25 +22,27 @@ void EuropeanSwaptionContract::SetContractInfo(
 	const std::string &currency, 
 	int receiver_or_payer, 
 	const std::string &option_maturity_date, 
+	double strike_swap_rate, 
+	int option_day_count, 
 	const std::string &underlying_swap_start_date, 
 	double underlying_swap_notional_amount, 
 	double underlying_swap_contract_term, 
 	double underlying_swap_payment_period, 
 	int underlying_swap_day_count, 
-	double undelying_swap_spread_on_index_rate, 
-	double strike_swap_rate
+	double undelying_swap_spread_on_index_rate
 ){
 	m_effective_date = effective_date;
 	m_currency = currency;
 	m_receiver_or_payer = receiver_or_payer;
 	m_option_maturity_date = option_maturity_date;
+	m_strike_swap_rate = strike_swap_rate;
+	m_option_day_count = option_day_count;
 	m_underlying_swap_start_date = underlying_swap_start_date;
 	m_underlying_swap_notional_amount = underlying_swap_notional_amount;
 	m_underlying_swap_contract_term = underlying_swap_contract_term;
 	m_underlying_swap_payment_period = underlying_swap_payment_period;
 	m_underlying_swap_day_count = underlying_swap_day_count;
 	m_undelying_swap_spread_on_index_rate = undelying_swap_spread_on_index_rate;
-	m_strike_swap_rate = strike_swap_rate;
 	m_contract_info_set_flag = 1;
 }
 
@@ -112,7 +114,14 @@ double EuropeanSwaptionContract::CalcPV(
 			index_rate_day_count_basis, 
 			index_rate_compound_period
 		);
-		float_leg_CF = m_underlying_swap_notional_amount * (forward_rate + m_undelying_swap_spread_on_index_rate) * (num_of_days_to_interest_end_date / (double)m_underlying_swap_day_count);
+		float_leg_CF = 
+			m_underlying_swap_notional_amount
+			 * 
+			(forward_rate + m_undelying_swap_spread_on_index_rate)
+			 * 
+			((num_of_days_to_interest_end_date - num_of_days_to_interest_start_date) / (double)m_underlying_swap_day_count)
+			 * 
+			(m_underlying_swap_day_count / (double)index_rate_day_count_basis);
 		discounted_float_leg_CF = float_leg_CF * discount_factor;
 		float_leg_value = float_leg_value + discounted_float_leg_CF;
 		
@@ -144,9 +153,9 @@ double EuropeanSwaptionContract::CalcPV(
 	
 	//step.3 calculate option value
 	//calc d1 and d2
-	double d1 = (std::log(forward_swap_rate / m_strike_swap_rate) + volatility * volatility * ((double)option_term_days / 365)) 
-					/ (volatility * std::sqrt(option_term_days / 365));
-	double d2 = d1 - (volatility * std::sqrt(option_term_days / 365));
+	double d1 = (std::log(forward_swap_rate / m_strike_swap_rate) + volatility * volatility * ((double)option_term_days / m_option_day_count)) 
+					/ (volatility * std::sqrt(option_term_days / (double)m_option_day_count));
+	double d2 = d1 - (volatility * std::sqrt(option_term_days / (double)m_option_day_count));
 	
 	//calc swaption pv
 	double pv = 0;

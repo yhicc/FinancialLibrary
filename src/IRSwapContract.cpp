@@ -111,8 +111,6 @@ double IRSwapContract::CalcPV(
 			discounted_float_leg_CF = float_leg_CF * discount_factor;
 		//calc Forward Rate
 		}else{
-			//forward discount factor から求める式に変更する！！！！！
-			//（でないとCF計算が面倒）
 			forward_rate = calc_util.CalcForwardRate(
 				index_rate_to_interest_start_date, 
 				num_of_days_to_interest_start_date, 
@@ -121,7 +119,14 @@ double IRSwapContract::CalcPV(
 				index_rate_day_count_basis, 
 				index_rate_compound_period
 			);
-			float_leg_CF = m_notional_amount * (forward_rate + m_spread_on_index_rate) * (num_of_days_to_interest_end_date / (double)m_day_count);
+			float_leg_CF = 
+				m_notional_amount
+				 * 
+				(forward_rate + m_spread_on_index_rate)
+				 * 
+				((num_of_days_to_interest_end_date - num_of_days_to_interest_start_date) / (double)m_day_count)
+				 * 
+				(m_day_count / (double)index_rate_day_count_basis);
 			discounted_float_leg_CF = float_leg_CF * discount_factor;
 		}
 		float_leg_value = float_leg_value + discounted_float_leg_CF;

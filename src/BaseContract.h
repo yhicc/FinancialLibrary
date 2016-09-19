@@ -34,16 +34,33 @@ public:
 		const std::string &currency, 
 		int receiver_or_payer, 
 		const std::string &option_maturity_date, 
+		double strike_swap_rate, 
+		int option_day_count, 
 		const std::string &underlying_swap_start_date, 
 		double underlying_swap_notional_amount, 
 		double underlying_swap_contract_term, 
 		double underlying_swap_payment_period, 
 		int underlying_swap_day_count, 
-		double undelying_swap_spread_on_index_rate, 
-		double strike_swap_rate
+		double undelying_swap_spread_on_index_rate
 	){
 		throw FinLibException("Bad argument for SetContractInfo");
 	}
+	
+	// for setting Cap/Floor contract info
+	virtual void SetContractInfo(
+		const std::string &effective_date, 
+		const std::string &currency, 
+		int cap_or_floor, 
+		double notional_amount, 
+		double contract_term, 
+		double strike_rate, 
+		int frequency, 
+		int day_count, 
+		double next_index_rate
+	){
+		throw FinLibException("Bad argument for SetContractInfo");
+	}
+	
 	
 	// for calculating IR Swap PV
 	virtual double CalcPV(
@@ -60,7 +77,7 @@ public:
 		throw FinLibException("Bad argument for CalcPV");
 	}
 	
-	// for calculating European Swaption PV
+	// for calculating European Swaption and Cap/Floor PV
 	virtual double CalcPV(
 		const std::string &valuation_date, 
 		const std::vector<int> &index_rate_term, 
