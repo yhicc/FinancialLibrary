@@ -25,12 +25,14 @@ This is the example and overall flow to use the library. The actual methods are 
 Users have to include Contract.h and FinLibException.h, but don't have to include each product class header file such as EuropeanSwaptionContract.h.  
 Depending on product, additional header files have to be included such as VolatilityCube.h.    
   
+This is in the case of European Swaption.  
 1st step is creating Contract object. At this time, users have to designate product name by passing argument to Contract constructor.  
 ```
 std::unique_ptr<Contract> eswpt;
 eswpt.reset(new Contract("EuropeanSwaption"));  
 ```
-2nd step is setting contract information to Contract object. Arguments differ with products.  
+2nd step is setting contract information to Contract object.  
+Arguments differ with products.  
 ```
 eswpt->SetContractInfo(
 	"20160713", 	// Effective date
@@ -47,7 +49,8 @@ eswpt->SetContractInfo(
 	0.001, 			//  Underlying swap spread on index rate
 );
 ```
-3rd step is call CalcPV function.  
+3rd step is to call CalcPV function passing market rate information.  
+Arguments differ with products.  
 ```
 pv = eswpt->CalcPV(
 	"20160719", 					// Valuation date
