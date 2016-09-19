@@ -1,9 +1,10 @@
 
 #include "Contract.h"
-#include "ContractImpl.h"
+//#include "ContractImpl.h"
 #include "BaseContract.h"
 #include "IRSwapContract.h"
 #include "EuropeanSwaptionContract.h"
+#include "CapFloorContract.h"
 #include "VolatilityCube.h"
 #include "FinLibException.h"
 #include <string>
@@ -11,9 +12,12 @@
 
 //constructor
 Contract::Contract(const std::string &product){
-	if("IRSwap" == product || "EuropeanSwaption" == product || "CapFloor" == product){
-		m_contract_impl.reset(new ContractImpl());
-		m_contract_impl->CreateContract(product);
+	if("IRSwap" == product){
+		m_contract.reset(new IRSwapContract);
+	}else if("EuropeanSwaption" == product){
+		m_contract.reset(new EuropeanSwaptionContract);
+	}else if("CapFloor" == product){
+		m_contract.reset(new CapFloorContract);
 	}else{
 		throw FinLibException("Bad argument for Contract constructor : The product name is not covered.");
 	}
@@ -36,7 +40,7 @@ void Contract::SetContractInfo(
 	int day_count, 
 	double next_float_rate
 ){
-	m_contract_impl->SetContractInfo(
+	m_contract->SetContractInfo(
 		effective_date, 
 		currency, 
 		fixed_or_float, 
@@ -65,7 +69,7 @@ void Contract::SetContractInfo(
 	int underlying_swap_day_count, 
 	double undelying_swap_spread_on_index_rate
 ){
-	m_contract_impl->SetContractInfo(
+	m_contract->SetContractInfo(
 		effective_date, 
 		currency, 
 		receiver_or_payer, 
@@ -93,7 +97,7 @@ void Contract::SetContractInfo(
 	int day_count, 
 	double next_index_rate
 ){
-	m_contract_impl->SetContractInfo(
+	m_contract->SetContractInfo(
 		effective_date, 
 		currency, 
 		cap_or_floor, 
@@ -119,7 +123,7 @@ double Contract::CalcPV(
 	int discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
 	int discount_rate_compound_period	// PA == 1, SA == 2, Continuous == 0
 ){
-	return m_contract_impl->CalcPV(
+	return m_contract->CalcPV(
 		valuation_date, 
 		index_rate_term,  
 		index_rate_value, 
@@ -148,7 +152,7 @@ double Contract::CalcPV(
 	int num_of_vol_underlying_term_grid, 
 	int num_of_vol_option_term_grid
 ){
-	return m_contract_impl->CalcPV(
+	return m_contract->CalcPV(
 		valuation_date, 
 		index_rate_term, 
 		index_rate_value, 
@@ -164,39 +168,5 @@ double Contract::CalcPV(
 		num_of_vol_option_term_grid
 	);
 }
-
-/*
-double Contract::CalcPV(
-	const std::string &valuation_date, 
-	const std::vector<int> &index_rate_term, 
-	const std::vector<double> &index_rate_value, 
-	int index_rate_day_count_basis, 		// ACT/360 == 360, ACT/365 == 365
-	int index_rate_compound_period, 		// PA == 1, SA == 2, Continuous == 0
-	const std::vector<int> &discount_curve_term, 
-	const std::vector<double> &discount_curve_value, 
-	int discount_rate_day_count_basis, 		// ACT/360 == 360, ACT/365 == 365
-	int discount_rate_compound_period, 		// PA == 1, SA == 2, Continuous == 0
-	const std::vector<VolatilityCube> &volatility_set, 
-	int num_of_vol_strike_rate, 
-	int num_of_vol_underlying_term_grid, 
-	int num_of_vol_option_term_grid
-){
-	return m_contract_impl->CalcPV(
-		valuation_date, 
-		index_rate_term, 
-		index_rate_value, 
-		index_rate_day_count_basis, 		// ACT/360 == 360, ACT/365 == 365
-		index_rate_compound_period, 		// PA == 1, SA == 2, Continuous == 0
-		discount_curve_term, 
-		discount_curve_value, 
-		discount_rate_day_count_basis, 		// ACT/360 == 360, ACT/365 == 365
-		discount_rate_compound_period, 		// PA == 1, SA == 2, Continuous == 0
-		volatility_set, 
-		num_of_vol_strike_rate, 
-		num_of_vol_underlying_term_grid, 
-		num_of_vol_option_term_grid
-	);
-}
-*/
 
 

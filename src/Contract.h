@@ -7,6 +7,8 @@
 #include <memory>
 #include <vector>
 
+class BaseContract;
+
 class Contract{
 	
 public:
@@ -88,28 +90,10 @@ public:
 		int num_of_vol_option_term_grid
 	);
 	
-/*	// for calculating Cap/Floor PV
-	double CalcPV(
-		const std::string &valuation_date, 
-		const std::vector<int> &index_rate_term, 
-		const std::vector<double> &index_rate_value, 
-		int index_rate_day_count_basis, 		// ACT/360 == 360, ACT/365 == 365
-		int index_rate_compound_period, 		// PA == 1, SA == 2, Continuous == 0
-		const std::vector<int> &discount_curve_term, 
-		const std::vector<double> &discount_curve_value, 
-		int discount_rate_day_count_basis, 		// ACT/360 == 360, ACT/365 == 365
-		int discount_rate_compound_period, 		// PA == 1, SA == 2, Continuous == 0
-		const std::vector<VolatilityCube> &volatility_set, 
-		int num_of_vol_strike_rate, 
-		int num_of_vol_underlying_term_grid, 
-		int num_of_vol_option_term_grid
-	);
-*/
 	
 private:
 	
-	class ContractImpl;
-	std::unique_ptr<ContractImpl> m_contract_impl;
+	std::unique_ptr<BaseContract> m_contract;
 	
 };
 
