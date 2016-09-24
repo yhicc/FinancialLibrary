@@ -20,6 +20,7 @@ FinancialLibrary provides following functions.
 
 ##Usage
 This is the example and overall flow to use the library. The actual methods are described in doc/api_spec.txt.  
+Financial Library is in "FinLib" namespace.  
   
 ####1.Pricing Contract  
 Users have to include Contract.h and FinLibException.h, but don't have to include each product class header file such as EuropeanSwaptionContract.h.  
@@ -28,8 +29,8 @@ Depending on product, additional header files have to be included such as Volati
 This is in the case of European Swaption. (Using flow is same, but arguments differ with each product.)  
 1st step is creating Contract object. At this time, users have to designate product name by passing argument to Contract constructor.  
 ```
-std::unique_ptr<Contract> eswpt;
-eswpt.reset(new Contract("EuropeanSwaption"));  
+std::unique_ptr<FinLib::Contract> eswpt;
+eswpt.reset(new FinLib::Contract("EuropeanSwaption"));  
 ```
 2nd step is setting contract information to Contract object.  
 Arguments differ with products.  
@@ -73,8 +74,8 @@ pv = eswpt->CalcPV(
 Users have to include YieldCurve.h and FinLibException.h.  
 1st step is creating Yield Curve object.  
 ```
-std::unique_ptr<YieldCurve> ycv;
-ycv.reset(new YieldCurve());  
+std::unique_ptr<FinLib::YieldCurve> ycv;
+ycv.reset(new FinLib::YieldCurve());  
 ```
 2nd step is setting base date, cash rate and swap rate to Yield Curve object.  
 ```
@@ -84,7 +85,7 @@ ycv->SetSwapRate(swap_grid, swap_rate);
 ```
 3rd step is call CalcZeroRate function. At this time, user pass array to set calculated zero rate to the function.  
 ```
-ycv->CalcZeroRate(zeroRate);  
+ycv->CalcZeroRate(zeroRate, 360, 2);  
 ```
   
 
