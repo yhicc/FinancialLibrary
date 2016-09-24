@@ -33,7 +33,6 @@ std::unique_ptr<FinLib::Contract> eswpt;
 eswpt.reset(new FinLib::Contract("EuropeanSwaption"));  
 ```
 2nd step is setting contract information to Contract object.  
-Arguments differ with products.  
 ```
 eswpt->SetContractInfo(
 	"20160713", 	// Effective date
@@ -51,7 +50,6 @@ eswpt->SetContractInfo(
 );
 ```
 3rd step is to call CalcPV function passing market rate information.  
-Arguments differ with products.  
 ```
 pv = eswpt->CalcPV(
 	"20160719", 					// Valuation date
