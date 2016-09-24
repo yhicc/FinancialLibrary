@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 
+namespace FinLib{
 
 //Constructor
 //FinLibException::FinLibException();
@@ -19,5 +20,5 @@ std::string FinLibException::What(){
 	return m_message;
 }
 
-
+}
 

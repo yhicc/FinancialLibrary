@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+namespace FinLib{
+
 class DateUtil{
 
 private:
@@ -44,6 +46,8 @@ public:
 	int GetDayOfWeek(int year, int month, int day);
 
 };
+
+}
 
 #endif
 

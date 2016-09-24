@@ -5,6 +5,7 @@
 #include "FinLibException.h"
 #include <string>
 
+namespace FinLib{
 
 //constructor
 IRSwapContract::IRSwapContract(){
@@ -148,4 +149,5 @@ double IRSwapContract::CalcPV(
 	return pv;
 }
 
+}
 

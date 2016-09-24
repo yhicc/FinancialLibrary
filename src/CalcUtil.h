@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+namespace FinLib{
 
 class CalcUtil{
 	
@@ -75,4 +76,6 @@ public:
 	);
 	
 };
+
+}
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+namespace FinLib{
 
 class CapFloorContract : public BaseContract{
 
@@ -59,6 +60,7 @@ public:
 
 };
 
+}
 
 #endif
 

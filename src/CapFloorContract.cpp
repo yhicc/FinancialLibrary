@@ -7,6 +7,7 @@
 #include <string>
 #include <cmath>
 
+namespace FinLib{
 
 //constructor
 CapFloorContract::CapFloorContract(){
@@ -157,5 +158,6 @@ double CapFloorContract::CalcPV(
 	return cap_value;
 }
 
+}
 
 

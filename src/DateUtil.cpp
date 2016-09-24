@@ -5,6 +5,7 @@
 using std::string;
 using std::stringstream;
 
+namespace FinLib{
 
 //constructor
 DateUtil::DateUtil(){
@@ -486,7 +487,7 @@ int DateUtil::GetDayOfWeek(int year, int month, int day){
 	return (day + ((8 + (13 * month)) / 5) + (year + (year / 4) - (year / 100) + (year / 400))) % 7;
 }
 
-
+}
 
 
 

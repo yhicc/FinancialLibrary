@@ -7,10 +7,11 @@
 #include <memory>
 #include <vector>
 
+namespace FinLib{
+
 class BaseContract;
 
 class Contract{
-	
 public:
 	
 	Contract(const std::string &product);
@@ -97,6 +98,7 @@ private:
 	
 };
 
+}
 
 #endif
 

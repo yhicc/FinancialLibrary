@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 
+namespace FinLib{
+
 class BaseContract{
 	
 public:
@@ -98,6 +100,7 @@ public:
 	
 };
 
+}
 
 #endif
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <cmath>
 
+namespace FinLib{
 
 //constructor
 EuropeanSwaptionContract::EuropeanSwaptionContract(){
@@ -170,4 +171,5 @@ double EuropeanSwaptionContract::CalcPV(
 	return pv;
 }
 
+}
 

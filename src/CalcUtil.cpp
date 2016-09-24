@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 
+namespace FinLib{
 
 //Interpolate Func
 double CalcUtil::Interpolate(double target_term, double pre_term, double post_term, double pre_value, double post_value){
@@ -62,7 +63,7 @@ double CalcUtil::CalcForwardRate(
 				)
 				* compound_period;
 	}else if(compound_period == 0){
-		return ((endTermZR * endTerm) - (startTermZR * startTerm)) / (endTerm - startTerm);
+		return ((endTermZR * endTerm) - (startTermZR * startTerm)) / (double)(endTerm - startTerm);
 	}
 }
 
@@ -179,5 +180,5 @@ double CalcUtil::InterpolateVolatility(
 	return volatility;
 }
 
-
+}
 

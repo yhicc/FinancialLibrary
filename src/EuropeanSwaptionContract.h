@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+namespace FinLib{
 
 class EuropeanSwaptionContract : public BaseContract{
 
@@ -64,6 +65,7 @@ public:
 
 };
 
+}
 
 #endif
 

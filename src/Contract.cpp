@@ -1,6 +1,5 @@
 
 #include "Contract.h"
-//#include "ContractImpl.h"
 #include "BaseContract.h"
 #include "IRSwapContract.h"
 #include "EuropeanSwaptionContract.h"
@@ -9,6 +8,7 @@
 #include "FinLibException.h"
 #include <string>
 
+namespace FinLib{
 
 //constructor
 Contract::Contract(const std::string &product){
@@ -169,4 +169,5 @@ double Contract::CalcPV(
 	);
 }
 
+}
 

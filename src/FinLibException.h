@@ -5,6 +5,7 @@
 #include <string>
 #include <stdexcept>
 
+namespace FinLib{
 
 class FinLibException : public std::exception{
 
@@ -22,6 +23,7 @@ private:
 	
 };
 
+}
 
 #endif
 
