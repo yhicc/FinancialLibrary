@@ -1,0 +1,149 @@
+
+1. Public header files
+	These files are public header and users have to include.
+		Contract.h (required when using valuation of contract functions)
+		YieldCurve.h (required when using building yield curve functions)
+		FinLibException.h (required all the time)
+		VolatilityCube.h (required when using valuation of options contract functions)
+
+
+2. Namespace
+	FinancialLibrary is in "FinLib" namespace.
+
+
+3. Contract class methods
+	
+	Using process
+	    1. Create contract object by calling constractor with product name argument
+			Available product : IRSwap, EuropeanSwaption, CapFloor
+		2. Set contract information by "SetContractInfo" method
+		3. Calc PV by "CalcPV" method
+	
+	---methods---
+	
+	Contract(const std::string &product);
+	virtual ~Contract();
+	
+	// for setting IR Swap contract info
+	void SetContractInfo(
+		const std::string &effective_date, 
+		const std::string &currency, 
+		int fixed_or_float, 			// 0 == fixed payer, 1 == float payer
+		double notional_amount, 
+		double contract_term, 
+		double payment_period, 
+		double fixed_rate, 
+		double spread_on_index_rate, 
+		int day_count, 					// ACT/360 == 360, ACT/365 == 365
+		double next_float_rate
+	);
+	
+	// for setting European Swaption contract info
+	void SetContractInfo(
+		const std::string &effective_date, 
+		const std::string &currency, 
+		int receiver_or_payer, 
+		const std::string &option_maturity_date, 
+		double strike_swap_rate, 
+		int option_day_count, 
+		const std::string &underlying_swap_start_date, 
+		double underlying_swap_notional_amount, 
+		double underlying_swap_contract_term, 
+		double underlying_swap_payment_period, 
+		int underlying_swap_day_count, 
+		double undelying_swap_spread_on_index_rate
+	);
+	
+	// for setting Cap/Floor contract info
+	void SetContractInfo(
+		const std::string &effective_date, 
+		const std::string &currency, 
+		int cap_or_floor, 
+		double notional_amount, 
+		double contract_term, 
+		double strike_rate, 
+		int frequency, 
+		int day_count, 
+		double next_index_rate
+	);
+	
+	// for calculating IR Swap PV
+	double CalcPV(
+		const std::string &valuation_date, 
+		const std::vector<int> &index_rate_term,  
+		const std::vector<double> &index_rate_value, 
+		int index_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		int index_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
+		const std::vector<int> &discount_curve_term, 
+		const std::vector<double> &discount_curve_value, 
+		int discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		int discount_rate_compound_period	// PA == 1, SA == 2, Continuous == 0
+	);
+	
+	// for calculating European Swaption and Cap/Floor PV
+	double CalcPV(
+		const std::string &valuation_date, 
+		const std::vector<int> &index_rate_term, 
+		const std::vector<double> &index_rate_value, 
+		int index_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		int index_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
+		const std::vector<int> &discount_curve_term, 
+		const std::vector<double> &discount_curve_value, 
+		int discount_rate_day_count_basis, 	// ACT/360 == 360, ACT/365 == 365
+		int discount_rate_compound_period, 	// PA == 1, SA == 2, Continuous == 0
+		const std::vector<VolatilityCube> &volatility_set, 
+		int num_of_vol_strike_rate, 
+		int num_of_vol_underlying_term_grid, 
+		int num_of_vol_option_term_grid
+	);
+	----------
+
+4. YieldCurve class methods
+
+	Using process
+	    1. Create yieldcurve object by calling constractor
+		2. Set base date by "SetBaseDate" method
+		3. Set cash rate and swap rate by "SetCashRate" and "SetSwapRate" method
+		4. Build zero rate by "CalcZeroRate" method
+
+	---methods---
+
+	//setter
+	void SetBaseDate(const std::string &base_date);
+	void SetCurrency(const std::string &cur);
+	
+	//cash rate for ON, TN, 1W, 2W, 1M, 2M, 3M, 6M and 12M
+	void SetCashRate(
+		const std::vector<double> &cash_rate_value, 
+		int cash_day_count
+	);
+	
+	//tem is the number of year
+	void SetSwapRate(
+		const std::vector<double> &swap_term, 
+		const std::vector<double> &swap_rate, 
+		int swap_day_count
+	);
+	
+	//getter
+	std::string GetBaseDate();
+	std::string GetCurrency();
+	void GetCashRate(std::vector<double> &cashrate);
+	void GetSwapRate(
+		std::vector<double> &swap_term, 
+		std::vector<double> &swap_rate
+	);
+	
+	//Build Yield Curve function
+	void CalcDiscountFactor(std::vector<double> &df);
+	void CalcZeroRate(
+		std::vector<double> &zero_rate, 
+		int day_count, 
+		int compound_period
+	);
+	----------
+
+5. Exception
+	FinancialLibrry throws "FinLibException" when unexpected problem occurs.
+	
+	
