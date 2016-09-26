@@ -5,7 +5,6 @@
 #include "CalcUtil.h"
 #include "FinLibException.h"
 #include <cmath>
-#include <iostream>
 
 namespace FinLib{
 
@@ -33,9 +32,7 @@ void YieldCurve::YieldCurveImpl::BuildYieldCurve(){
 	m_discount_factor_value.clear();
 	
 	BuildShortEndOfCurve();
-	std::cout << "check build1" << std::endl;
 	BuildLongEndOfCurve();
-	std::cout << "check build2" << std::endl;
 	built_zero_rate_flag = 1;
 }
 
