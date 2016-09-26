@@ -5,6 +5,7 @@
 #include "CalcUtil.h"
 #include "FinLibException.h"
 #include <cmath>
+#include <iostream>
 
 namespace FinLib{
 
@@ -32,7 +33,9 @@ void YieldCurve::YieldCurveImpl::BuildYieldCurve(){
 	m_discount_factor_value.clear();
 	
 	BuildShortEndOfCurve();
+	std::cout << "check build1" << std::endl;
 	BuildLongEndOfCurve();
+	std::cout << "check build2" << std::endl;
 	built_zero_rate_flag = 1;
 }
 
@@ -67,7 +70,7 @@ void YieldCurve::YieldCurveImpl::BuildShortEndOfCurve(){
 	std::vector<int> num_of_days_to_maturity(NUM_OF_CASH_RATE_TERM);
 	for(int i = 0; i < NUM_OF_CASH_RATE_TERM; i++){
 		num_of_days_to_maturity[i] = date_util.calcDateDiff(start_date[i], end_date[i]);
-		m_zero_rate_term[i] = num_of_days_to_maturity[i];
+		m_zero_rate_term.push_back(num_of_days_to_maturity[i]);
 	}
 	
 	//calc DiscountFactor from Cash rate
@@ -78,16 +81,12 @@ void YieldCurve::YieldCurveImpl::BuildShortEndOfCurve(){
 										* m_discount_factor_value[0]);
 	//DiscountFactor to Spot date
 	double df_spot = m_discount_factor_value[0] * m_discount_factor_value[1];
+	
 	//DiscountFactor to today for other terms
 	for(int i = 2; i < NUM_OF_CASH_RATE_TERM; i++){
-		m_discount_factor_value.push_back(1 / ((1 + m_cash_rate_value[i] * num_of_days_to_maturity[i] / (double)CASH_DAY_COUNT))
+		m_discount_factor_value.push_back(1 / ((1 + m_cash_rate_value[i] * num_of_days_to_maturity[i] / (double)m_cash_rate_day_count))
 										* df_spot);
 	}
-	
-	//Calc ZeroRates from DiscountFactors
-//	for(int i = 0; i < NUM_OF_CASH_RATE_TERM; i++){
-//		m_zero_rate_value.push_back(std::log(m_discount_factor_value[i]) / (double)(num_of_days_to_maturity[i] / (double)CASH_DAY_COUNT) * (-1));
-//	}	
 }
 
 
@@ -118,19 +117,10 @@ void YieldCurve::YieldCurveImpl::BuildLongEndOfCurve(){
 		interpolated_swap_rate_value[i] = calc_util.InterpolateRange(num_of_days_interpolated_swap[i], num_of_days_swap, m_swap_rate_value);
 	}
 	
-	
-	//Arrays to store long term zero rate and discount factor
-	//These arrays have additional term in comparison with interpolated swap rate (0.5, 1, 1.5, 2,,,)
-	std::vector<double> long_term_zero_rate_term(NUM_OF_INTPLTDSWPGRD);
-	std::vector<double> long_term_zero_rate_value(NUM_OF_INTPLTDSWPGRD);
+	//Arrays to store long term discount factor
+	//This arrays have additional term in comparison with interpolated swap rate (0.5, 1, 1.5, 2,,,)
 	std::vector<double> long_term_discount_factor_value(NUM_OF_INTPLTDSWPGRD);
-	for(int i = 0; i < NUM_OF_INTPLTDSWPGRD; i++){
-		long_term_zero_rate_term[i] = 0.5 + i * 0.5;
-	}
-	
 	//use short term zero curve value for 0.5 year and 1 year
-	long_term_zero_rate_value[0] = m_zero_rate_value[DEFAULT_LIBOR_GRID_NUM - 2];
-	long_term_zero_rate_value[1] = m_zero_rate_value[DEFAULT_LIBOR_GRID_NUM - 1];
 	long_term_discount_factor_value[0] = m_discount_factor_value[DEFAULT_LIBOR_GRID_NUM -2];
 	long_term_discount_factor_value[1] = m_discount_factor_value[DEFAULT_LIBOR_GRID_NUM -1];
 	
@@ -144,22 +134,24 @@ void YieldCurve::YieldCurveImpl::BuildLongEndOfCurve(){
 		}
 		long_term_discount_factor_value[i] = (100 - sum_interest) / (double)(100 + interpolated_swap_rate_value[i-1]
 												 * ((num_of_days_interpolated_swap[i] - num_of_days_interpolated_swap[i-1]) / (double)m_swap_rate_day_count));
-		m_zero_rate_term[i+7] = num_of_days_interpolated_swap[i];
-//		long_term_zero_rate_value[i] = -1 * std::log(long_term_discount_factor_value[i]);
+		m_zero_rate_term.push_back(num_of_days_interpolated_swap[i]);
 	}
 	
 	//take long term zero rate and DF into member variable zero rate and DF
 	for(int i = 2; i < NUM_OF_INTPLTDSWPGRD; i++){
 		m_discount_factor_value.push_back(long_term_discount_factor_value[i]);
-//		m_zero_rate_value.push_back(long_term_zero_rate_value[i]);
 	}
-	
 }
 
 void YieldCurve::YieldCurveImpl::ConvertZeroRate(int day_count, int compound_period){
 	if(compound_period == 1 || compound_period == 2){
 		for(int i = 0; i < NUM_OF_DEFAULT_ZRRTGRD; i++){
-			m_zero_rate_value.push_back(m_discount_factor_value[i]);
+			m_zero_rate_value.push_back(
+				compound_period
+				 * 
+				(std::pow(1 / m_discount_factor_value[i], day_count / (double)(compound_period * m_zero_rate_term[i]))
+				 - 1)
+			);
 		}
 	}else{
 		for(int i = 0; i < NUM_OF_DEFAULT_ZRRTGRD; i++){
