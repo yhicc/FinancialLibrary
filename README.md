@@ -96,6 +96,6 @@ C++11
 Contract class is just an interface to library users and has a pointer to BaseContract class.  
 Specific contract classes such as IRSwapContract and EuropeanSwaptionContract are derived from BaseContract class.  
 When Contract class constructor is called with an argument of product name, the product contract class object is created and set to the Contract class pointer (to BaseContract class).  
-When Library users call Contract class method and Contract class calls the specific contract class method through the pointer.  
+When Library users call Contract class method, Contract class calls the specific contract class method through the pointer.  
 
   
