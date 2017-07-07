@@ -6,7 +6,7 @@ FinancialLibrary is C++ library to provide financial calculations such as pricin
   
   
 
-##Description
+## Description  
 FinancialLibrary provides following functions.  
 
 1.Pricing Contract  
@@ -18,11 +18,11 @@ FinancialLibrary provides following functions.
 	-Calculating zero rate from cash rate and swap rate  
   
 
-##Usage
+## Usage  
 This is the example and overall flow to use the library. The actual methods are described in doc/api_spec.txt.  
 Financial Library is in "FinLib" namespace.  
   
-####1.Pricing Contract  
+#### 1.Pricing Contract  
 Users have to include Contract.h and FinLibException.h, but don't have to include each product class header file such as EuropeanSwaptionContract.h.  
 Depending on product, additional header files have to be included such as VolatilityCube.h.    
   
@@ -68,7 +68,7 @@ pv = eswpt->CalcPV(
 );
 ```
   
-####2.Building Yield Curve  
+#### 2.Building Yield Curve  
 Users have to include YieldCurve.h and FinLibException.h.  
 1st step is creating Yield Curve object.  
 ```
@@ -87,12 +87,12 @@ ycv->CalcZeroRate(zeroRate, 360, 2);
 ```
   
 
-##Requirement
+## Requirement  
 C++11  
 
 
-##Structure
-####Contract
+## Structure  
+#### Contract  
 Contract class is just an interface (not so-called interface class in OOP) to library users and has a pointer to BaseContract class.  
 The actual Implementation is in the specific contract classes such as IRSwapContract and EuropeanSwaptionContract, and those classes are derived from BaseContract class.  
 When Contract class constructor is called with an argument of product name, the product contract class object is created and set to the Contract class pointer (to BaseContract class).  
